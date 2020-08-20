@@ -321,6 +321,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         self.trimmerView.maxLength = CGFloat(CMTimeGetSeconds((videoPlayer.currentItem?.asset.duration)!))
         self.trimmerView.trackerColor = .white
         self.trimmerView.thumbWidth = 12
+        trimmerView.backgroundColor = .gray
         self.trimmerView.resetSubviews()
         setLabelTime()
     }

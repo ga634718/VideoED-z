@@ -64,7 +64,10 @@ class TrimmerViewController: AssetSelectionVideoViewController {
         removeFileIfExists(fileURL: url2)
         let final = createUrlInApp(name: "\(currentDate()).MOV")
         removeFileIfExists(fileURL: final)
-        if st == 0 {
+        
+        if (st == 0 && st1 == curr) {
+            self.navigationController?.popViewController(animated: true)
+        }else if st == 0 {
             
             let cut2 = "-ss \(st1) -i \(filePath) -to \(end) -c copy \(final)"
             
