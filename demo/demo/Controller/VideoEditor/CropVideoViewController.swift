@@ -31,7 +31,7 @@ class CropVideoViewController: AssetSelectionVideoViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       selectRatio.register(UINib(nibName: "CropCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "CropCollectionViewCell")
+        selectRatio.register(UINib(nibName: "CropCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "CropCollectionViewCell")
         array.append(RatioCrop(ratio: "1:1"))
         array.append(RatioCrop(ratio: "4:5"))
         array.append(RatioCrop(ratio: "16:9"))
@@ -150,31 +150,31 @@ class CropVideoViewController: AssetSelectionVideoViewController {
             return
         }
     }
-
+    
     override func loadAsset(_ asset: AVAsset) {
-          videoCropView.asset = asset
-           selectThumbView.asset = asset
-           selectThumbView.delegate = self
-       }
+        videoCropView.asset = asset
+        selectThumbView.asset = asset
+        selectThumbView.delegate = self
+    }
     
 }
 
 extension CropVideoViewController: ThumbSelectorViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-   
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-       return array.count
-   }
-   
-   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CropCollectionViewCell", for: indexPath) as! CropCollectionViewCell
-       let data = array[indexPath.row]
-    cell.initView(ratio: data.ratio)
-       return cell
-   }
-   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width:collectionView.frame.width/6.1, height: collectionView.frame.height/1.5)
-   }
-   
+        return array.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CropCollectionViewCell", for: indexPath) as! CropCollectionViewCell
+        let data = array[indexPath.row]
+        cell.initView(ratio: data.ratio)
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width:collectionView.frame.width/6.1, height: collectionView.frame.height/1.5)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
@@ -209,8 +209,8 @@ extension CropVideoViewController: ThumbSelectorViewDelegate, UICollectionViewDe
             videoCropView.setAspectRatio(newRatio!, animated: true)
         default:
             print(indexPath.row)
-       }
-   }
+        }
+    }
     
     func didChangeThumbPosition(_ imageTime: CMTime) {
         videoCropView.player?.seek(to: imageTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)

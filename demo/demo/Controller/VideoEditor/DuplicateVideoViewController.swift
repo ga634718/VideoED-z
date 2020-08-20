@@ -50,39 +50,34 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
             debugPrint("Video not found")
             return
         }
-        
         let startTime = CGFloat(CMTimeGetSeconds(trimmerView.startTime!))
         let endTime = CGFloat(CMTimeGetSeconds(trimmerView.endTime!))
         let durationTime = CGFloat(CMTimeGetSeconds((trimmerView.endTime!) - trimmerView.startTime!))
         let lateTime = CGFloat(CMTimeGetSeconds((player.currentItem?.asset.duration)! - trimmerView.endTime!))
-        //        let currentTime = CGFloat(CMTimeGetSeconds((player?.currentTime())!))
         let duration = CGFloat(CMTimeGetSeconds((player.currentItem?.asset.duration)!))
         let dr = duration - endTime
         let dr2 = endTime + durationTime
         
-        let url = createUrlInApp(name: "cutvideo1.MOV")
+        let url = createUrlInApp(name: "Cutvideo1.MOV")
         removeFileIfExists(fileURL: url)
-        let url1 = createUrlInApp(name: "cutvideo2.MOV")
+        let url1 = createUrlInApp(name: "Cutvideo2.MOV")
         removeFileIfExists(fileURL: url1)
-        let url2 = createUrlInApp(name: "cutvideo3.MOV")
+        let url2 = createUrlInApp(name: "Cutvideo3.MOV")
         removeFileIfExists(fileURL: url2)
-        let furl1 = createUrlInApp(name: "videodemo1.MOV")
+        let furl1 = createUrlInApp(name: "Videodemo1.MOV")
         removeFileIfExists(fileURL: furl1)
         let furl2 = createUrlInApp(name: "videodemo2.MOV")
         removeFileIfExists(fileURL: furl2)
-        let audio1 = createUrlInApp(name: "audio.MOV")
+        let audio1 = createUrlInApp(name: "Audio.MOV")
         removeFileIfExists(fileURL: audio1)
-        let audio2 = createUrlInApp(name: "audio2.MOV")
+        let audio2 = createUrlInApp(name: "Audio2.MOV")
         removeFileIfExists(fileURL: audio2)
         let final = createUrlInApp(name: "\(currentDate()).MOV")
         removeFileIfExists(fileURL: final)
         
         if quality == "None" {
-            
             if (startTime == 0 && endTime == duration) {
-                
                 let duplicate = "-i \(filePath) -i \(filePath) -filter_complex \"[0:v:0] [0:a:0] [1:v:0] [1:a:0] concat=n=2:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\" \(final)"
-                
                 DispatchQueue.main.async {
                     ZKProgressHUD.show()
                 }
@@ -98,7 +93,7 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
-            }else if startTime == 0 {
+            } else if startTime == 0 {
                 let cut1 = "-ss 0 -i \(filePath) -to \(durationTime) -c copy \(url1)"
                 MobileFFmpeg.execute(cut1)
                 let cut2 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(url2)"
@@ -159,13 +154,6 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     MobileFFmpeg.execute(cut1)
                     MobileFFmpeg.execute(cut2)
                     MobileFFmpeg.execute(cut3)
-                    self.removeFileIfExists(fileURL: url)
-                    self.removeFileIfExists(fileURL: url1)
-                    self.removeFileIfExists(fileURL: url2)
-                    self.removeFileIfExists(fileURL: furl1)
-                    self.removeFileIfExists(fileURL: furl2)
-                    self.removeFileIfExists(fileURL: audio1)
-                    self.removeFileIfExists(fileURL: audio2)
                     self.duplicateURL = final
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
@@ -187,16 +175,16 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
             var cmdfinal1 = ""
             var cmdfinal2 = ""
             
-            let cmdvd1 = "-i \(url1) -i \(url) -filter_complex \"[0:v]setpts=PTS-STARTPTS[v0]; [1:v]setpts=PTS-STARTPTS,tpad=start_duration=\(endTime)[v1]; [v0][v1]hstack,crop=iw/2:ih:x='clip(2000*(t-\(endTime)),0,iw/2)':y=0[out]\" -map '[out]' \(furl1)"
-            let cmdvd11 = "-i \(furl1) -i \(url2) -filter_complex \"[0:v]setpts=PTS-STARTPTS[v0]; [1:v]setpts=PTS-STARTPTS,tpad=start_duration=\(dr2)[v1]; [v0][v1]hstack,crop=iw/2:ih:x='clip(2000*(t-\(dr2)),0,iw/2)':y=0[out]\" -map '[out]' \(furl2)"
+            let cmdPushRight1 = "-i \(url1) -i \(url) -filter_complex \"[0:v]setpts=PTS-STARTPTS[v0]; [1:v]setpts=PTS-STARTPTS,tpad=start_duration=\(endTime)[v1]; [v0][v1]hstack,crop=iw/2:ih:x='clip(2000*(t-\(endTime)),0,iw/2)':y=0[out]\" -map '[out]' \(furl1)"
+            let cmdPushRight2 = "-i \(furl1) -i \(url2) -filter_complex \"[0:v]setpts=PTS-STARTPTS[v0]; [1:v]setpts=PTS-STARTPTS,tpad=start_duration=\(dr2)[v1]; [v0][v1]hstack,crop=iw/2:ih:x='clip(2000*(t-\(dr2)),0,iw/2)':y=0[out]\" -map '[out]' \(furl2)"
             
-            let cmdvd2 = "-i \(url1) -i \(url) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(endTime):d=1:alpha=1,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1,setpts=PTS-STARTPTS+\(endTime)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(endTime-2.0)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl1)"
-            let cmdvd22 = "-i \(furl1) -i \(url2) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(dr2):d=1:alpha=1,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1,setpts=PTS-STARTPTS+\(dr2)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(dr2-2.0)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl2)"
+            let cmdCrossFade1 = "-i \(url1) -i \(url) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(endTime):d=1:alpha=1,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1,setpts=PTS-STARTPTS+\(endTime)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(endTime-2.0)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl1)"
+            let cmdCrossFade2 = "-i \(furl1) -i \(url2) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(dr2):d=1:alpha=1,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1,setpts=PTS-STARTPTS+\(dr2)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(dr2-2.0)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl2)"
             
-            let cmdvd3 = "-i \(url1) -i \(url) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(endTime-0.5):d=0.5,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=0.5,setpts=PTS-STARTPTS+\(endTime)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(endTime-1.0)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl1)"
-            let cmdvd33 = "-i \(furl1) -i \(url2) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(dr2-0.2):d=0.2,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=0.2,setpts=PTS-STARTPTS+\(dr2)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(dr2-0.4)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl2)"
+            let cmdColorFade1 = "-i \(url1) -i \(url) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(endTime-0.5):d=0.5,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=0.5,setpts=PTS-STARTPTS+\(endTime)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(endTime-1.0)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl1)"
+            let cmdColorFade2 = "-i \(furl1) -i \(url2) -f lavfi -i color=black -filter_complex \"[0:v]format=pix_fmts=yuva420p,fade=t=out:st=\(dr2-0.2):d=0.2,setpts=PTS-STARTPTS[va0];[1:v]format=pix_fmts=yuva420p,fade=t=in:st=0:d=0.2,setpts=PTS-STARTPTS+\(dr2)/TB[va1];[2:v]scale=\(width!)x\(height!),trim=duration=\(dr2-0.4)[over]; [over][va0]overlay[over1]; [over1][va1]overlay=format=yuv420[outv]\" -vcodec libx264 -map [outv] \(furl2)"
             
-            let cmdaudio = "-i \(url1) -i \(url) -filter_complex \"[0:v:0] [0:a:0] [1:v:0] [1:a:0] concat=n=2:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\" \(audio1)"
+            let cmdaudio1 = "-i \(url1) -i \(url) -filter_complex \"[0:v:0] [0:a:0] [1:v:0] [1:a:0] concat=n=2:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\" \(audio1)"
             let cmdaudio2 = "-i \(url1) -i \(url) -i \(url2) -filter_complex \"[0:v:0] [0:a:0] [1:v:0] [1:a:0] [2:v:0] [2:a:0] concat=n=3:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\" \(audio2)"
             
             if ratio == 1 {
@@ -217,20 +205,19 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
             serialQueue.async {
                 if endTime == duration {
                     if self.quality == "PushRight"{
-                        MobileFFmpeg.execute(cmdvd1)
+                        MobileFFmpeg.execute(cmdPushRight1)
                     }
                     if self.quality == "CrossFade"{
-                        MobileFFmpeg.execute(cmdvd2)
+                        MobileFFmpeg.execute(cmdCrossFade1)
                     }
                     if self.quality == "ColorFade"{
-                        MobileFFmpeg.execute(cmdvd3)
+                        MobileFFmpeg.execute(cmdColorFade1)
                     }
-                    MobileFFmpeg.execute(cmdaudio)
+                    MobileFFmpeg.execute(cmdaudio1)
                     MobileFFmpeg.execute(cmdfinal1)
                     self.duplicateURL = final
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
-//                    CustomPhotoAlbum.sharedInstance.saveVideo(url: final)
                     DispatchQueue.main.async {
                         ZKProgressHUD.dismiss(0.5)
                         ZKProgressHUD.showSuccess()
@@ -239,21 +226,20 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     }
                 } else {
                     if self.quality == "PushRight"{
-                        MobileFFmpeg.execute(cmdvd1)
-                        MobileFFmpeg.execute(cmdvd11)
+                        MobileFFmpeg.execute(cmdPushRight1)
+                        MobileFFmpeg.execute(cmdPushRight2)
                     }
                     if self.quality == "CrossFade"{
-                        MobileFFmpeg.execute(cmdvd2)
-                        MobileFFmpeg.execute(cmdvd22)
+                        MobileFFmpeg.execute(cmdCrossFade1)
+                        MobileFFmpeg.execute(cmdCrossFade2)
                     }
                     if self.quality == "ColorFade"{
-                        MobileFFmpeg.execute(cmdvd3)
-                        MobileFFmpeg.execute(cmdvd33)
+                        MobileFFmpeg.execute(cmdColorFade1)
+                        MobileFFmpeg.execute(cmdColorFade2)
                     }
                     MobileFFmpeg.execute(cmdaudio2)
                     MobileFFmpeg.execute(cmdfinal2)
                     self.duplicateURL = final
-//                    CustomPhotoAlbum.sharedInstance.saveVideo(url: final)
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
                     DispatchQueue.main.async {
@@ -362,19 +348,17 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
     }
     
     @objc func onPlaybackTimeChecker() {
-        
         guard let start = trimmerView.startTime, let end = trimmerView.endTime else {
-                return
-            }
-            
-            let playbackTime = player.currentTime()
-            trimmerView.seek(to: playbackTime)
-            
-            if playbackTime >= end {
-                player.seek(to: start, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-                trimmerView.seek(to: start)
-            }
+            return
         }
+        let playbackTime = player.currentTime()
+        trimmerView.seek(to: playbackTime)
+        
+        if playbackTime >= end {
+            player.seek(to: start, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+            trimmerView.seek(to: start)
+        }
+    }
     
     func changeIconBtnPlay() {
          if player.isPlaying {

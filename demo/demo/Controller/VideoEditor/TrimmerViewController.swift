@@ -53,30 +53,28 @@ class TrimmerViewController: AssetSelectionVideoViewController {
         }
         //CutVideo
         let zero = 0
-        let st = CGFloat(CMTimeGetSeconds(trimmerView.startTime!))
-        let st1 = CGFloat(CMTimeGetSeconds(trimmerView.endTime!))
-        let end = CGFloat(CMTimeGetSeconds((player.currentItem?.asset.duration)! - trimmerView.endTime!))
-        let curr = CGFloat(CMTimeGetSeconds((player.currentItem?.asset.duration)!))
+        let startTime = CGFloat(CMTimeGetSeconds(trimmerView.startTime!))
+        let endTime = CGFloat(CMTimeGetSeconds(trimmerView.endTime!))
+        let lateTime = CGFloat(CMTimeGetSeconds((player.currentItem?.asset.duration)! - trimmerView.endTime!))
+        let durationTime = CGFloat(CMTimeGetSeconds((player.currentItem?.asset.duration)!))
         
-        let url1 = createUrlInApp(name: "vdCut1.MOV")
+        let url1 = createUrlInApp(name: "VideoCut1.MOV")
         removeFileIfExists(fileURL: url1)
-        let url2 = createUrlInApp(name: "vdCut2.MOV")
+        let url2 = createUrlInApp(name: "VideoCut2.MOV")
         removeFileIfExists(fileURL: url2)
         let final = createUrlInApp(name: "\(currentDate()).MOV")
         removeFileIfExists(fileURL: final)
         
-        if (st == 0 && st1 == curr) {
+        if (startTime == 0 && endTime == durationTime) {
             self.navigationController?.popViewController(animated: true)
-        }else if st == 0 {
-            
-            let cut2 = "-ss \(st1) -i \(filePath) -to \(end) -c copy \(final)"
-            
+        } else if startTime == 0 {
+            let cmdCutVideo = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(final)"
             DispatchQueue.main.async {
                 ZKProgressHUD.show()
             }
             let serialQueue = DispatchQueue(label: "serialQueue")
             serialQueue.async {
-                MobileFFmpeg.execute(cut2)
+                MobileFFmpeg.execute(cmdCutVideo)
                 self.trimURL = final
                 self.isSave = true
                 DispatchQueue.main.async {
@@ -84,19 +82,19 @@ class TrimmerViewController: AssetSelectionVideoViewController {
                     ZKProgressHUD.showSuccess()
                     let asset = AVAsset(url: final as URL)
                     self.loadAsset(asset)
+                    self.setlabel()
                 }
             }
+        } else if endTime == durationTime {
             
-        } else if st1 == curr {
-            
-            let cut2 = "-ss \(zero) -i \(filePath) -to \(st) -c copy \(final)"
+            let cmdCutVideo = "-ss \(zero) -i \(filePath) -to \(startTime) -c copy \(final)"
             
             DispatchQueue.main.async {
                 ZKProgressHUD.show()
             }
             let serialQueue = DispatchQueue(label: "serialQueue")
             serialQueue.async {
-                MobileFFmpeg.execute(cut2)
+                MobileFFmpeg.execute(cmdCutVideo)
                 self.trimURL = final
                 self.isSave = true
                 DispatchQueue.main.async {
@@ -104,12 +102,13 @@ class TrimmerViewController: AssetSelectionVideoViewController {
                     ZKProgressHUD.showSuccess()
                     let asset = AVAsset(url: final as URL)
                     self.loadAsset(asset)
+                    self.setlabel()
                 }
             }
         } else {
             
-            let cut = "-ss \(zero) -i \(filePath) -to \(st) -c copy \(url1)"
-            let cut2 = "-ss \(st1) -i \(filePath) -to \(end) -c copy \(url2)"
+            let cut = "-ss \(zero) -i \(filePath) -to \(startTime) -c copy \(url1)"
+            let cut2 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(url2)"
             let cut3 = "-i \(url1) -i \(url2) -filter_complex \"[0:v:0] [0:a:0] [1:v:0] [1:a:0] concat=n=2:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\" \(final)"
             DispatchQueue.main.async {
                 ZKProgressHUD.show()
@@ -126,6 +125,7 @@ class TrimmerViewController: AssetSelectionVideoViewController {
                     ZKProgressHUD.showSuccess()
                     let asset = AVAsset(url: final as URL)
                     self.loadAsset(asset)
+                    self.setlabel()
                 }
             }
         }
@@ -159,7 +159,7 @@ class TrimmerViewController: AssetSelectionVideoViewController {
         let layer: AVPlayerLayer = AVPlayerLayer(player: player)
         layer.backgroundColor = UIColor.black.cgColor
         layer.frame = CGRect(x: 0, y: 0, width: playerView.frame.width, height: playerView.frame.height)
-//        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        //        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         playerView.layer.sublayers?.forEach({$0.removeFromSuperlayer()})
         playerView.layer.addSublayer(layer)
     }
@@ -190,13 +190,13 @@ class TrimmerViewController: AssetSelectionVideoViewController {
     }
     
     func changeIconBtnPlay() {
-         if player.isPlaying {
-             playButton.setImage(UIImage(named: "icon_pause"), for: .normal)
-         } else {
-             playButton.setImage(UIImage(named: "icon_play"), for: .normal)
-         }
-     }
-
+        if player.isPlaying {
+            playButton.setImage(UIImage(named: "icon_pause"), for: .normal)
+        } else {
+            playButton.setImage(UIImage(named: "icon_play"), for: .normal)
+        }
+    }
+    
     func startPlaybackTimeChecker() {
         
         stopPlaybackTimeChecker()

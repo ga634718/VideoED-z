@@ -68,7 +68,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
 //        urlVideo = URL(fileURLWithPath: fileManage.getFilePath(name: "small", type: "mp4"))
         
         asset = AVAsset(url: urlVideo)
-        addVieoPlayer(asset: asset, playerView: playerView)
+        
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -92,7 +92,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        addVieoPlayer(asset: asset, playerView: playerView)
         initTrimmerView(asset: asset)
         initVariable()
     }
@@ -835,6 +835,8 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
             self.arrURL[position] = url
             self.Audios[position].player.volume = volume
             self.Audios[position].player.rate = rate
+            self.volume = volume / self.volumeRate
+            self.rate = rate / self.steps
         }
         isReload = true
         initVariable()

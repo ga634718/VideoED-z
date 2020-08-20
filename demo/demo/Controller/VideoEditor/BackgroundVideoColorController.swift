@@ -40,8 +40,8 @@ class BackgroundVideoColorController: UIViewController {
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 68/255, green: 68/255, blue: 68/255, alpha: 1)))
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 51/255, green: 51/255, blue: 51/255, alpha: 1)))
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 34/255, green: 34/255, blue: 34/255, alpha: 1)))
-         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 17/255, green: 17/255, blue: 17/255, alpha: 1)))
-         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 0/255, green: 0/255, blue: 0/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 17/255, green: 17/255, blue: 17/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 0/255, green: 0/255, blue: 0/255, alpha: 1)))
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 250/255, green: 0/255, blue: 0/255, alpha: 1)))
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 221/255, green: 0/255, blue: 0/255, alpha: 1)))
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 204/255, green: 0/255, blue: 0/255, alpha: 1)))
@@ -71,7 +71,7 @@ class BackgroundVideoColorController: UIViewController {
         let playerItem = AVPlayerItem(asset: asset)
         playerController.player = AVPlayer(playerItem: playerItem)
         NotificationCenter.default.addObserver(self, selector: #selector(itemDidFinishPlaying(_:)),
-        name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
+                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
         playerController.view.frame = CGRect(x: 0, y: 0, width: videoView.frame.width, height:  videoView.frame.height)
         self.videoView.addSubview(playerController.view)
         playerController.view.backgroundColor = nil
@@ -146,16 +146,16 @@ class BackgroundVideoColorController: UIViewController {
             }
         }
     }
-//    private func addVideoPlayer(with asset: AVAsset, playerView: UIView) {
-//        let playerItem = AVPlayerItem(asset: asset)
-//        player = AVPlayer(playerItem: playerItem)
-//        let layer: AVPlayerLayer = AVPlayerLayer(player: player)
-//        layer.backgroundColor = UIColor.white.cgColor
-//        layer.frame = CGRect(x: 0, y: 0, width: playerView.frame.width, height: playerView.frame.height)
-//        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-//        playerView.layer.sublayers?.forEach({$0.removeFromSuperlayer()})
-//        playerView.layer.addSublayer(layer)
-//    }
+    //    private func addVideoPlayer(with asset: AVAsset, playerView: UIView) {
+    //        let playerItem = AVPlayerItem(asset: asset)
+    //        player = AVPlayer(playerItem: playerItem)
+    //        let layer: AVPlayerLayer = AVPlayerLayer(player: player)
+    //        layer.backgroundColor = UIColor.white.cgColor
+    //        layer.frame = CGRect(x: 0, y: 0, width: playerView.frame.width, height: playerView.frame.height)
+    //        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+    //        playerView.layer.sublayers?.forEach({$0.removeFromSuperlayer()})
+    //        playerView.layer.addSublayer(layer)
+    //    }
     
     func getVideoRatio(url:URL) -> CGFloat{
         let size = resolutionSizeForLocalVideo(url: url)
@@ -206,7 +206,7 @@ class BackgroundVideoColorController: UIViewController {
 }
 
 extension BackgroundVideoColorController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
-
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return arr2.count

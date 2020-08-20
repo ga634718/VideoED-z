@@ -33,7 +33,7 @@ class TFVideoViewController: UIViewController {
         let playerItem = AVPlayerItem(asset: asset)
         playerController.player = AVPlayer(playerItem: playerItem)
         NotificationCenter.default.addObserver(self, selector: #selector(itemDidFinishPlaying(_:)),
-        name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
+                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
         playerController.view.frame = CGRect(x: 0, y: 0, width: videoView.frame.width, height:  videoView.frame.height)
         self.videoView.addSubview(playerController.view)
         playerController.view.backgroundColor = nil
@@ -165,7 +165,7 @@ class TFVideoViewController: UIViewController {
             player.seek(to: CMTime.zero, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
         }
     }
- 
+    
     func createUrlInApp(name: String ) -> URL {
         return URL(fileURLWithPath: "\(NSTemporaryDirectory())\(name)")
     }

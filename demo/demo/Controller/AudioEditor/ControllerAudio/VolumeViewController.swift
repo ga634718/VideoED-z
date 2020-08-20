@@ -89,9 +89,9 @@ class VolumeViewController: UIViewController {
         if !isVideo {
             player.numberOfLoops = -1
             player.enableRate = true
-        endTime = CGFloat(player.duration)
-        startTime = 0
-        initMedia()
+            endTime = CGFloat(player.duration)
+            startTime = 0
+            initMedia()
         }
     }
     
@@ -167,27 +167,30 @@ class VolumeViewController: UIViewController {
             } else {
                 videoPlayer.seek(to: CMTimeMakeWithSeconds(Float64(start), preferredTimescale: 600))
             }
-
+            
             trimmerView.seek(toTime: start)
         }
     }
     
     // MARK: Handle IBAction
     @IBAction func play(_ sender: Any) {
-        if player.isPlaying || videoPlayer.isPlaying {
-            if isVideo {
+        if isVideo {
+            if videoPlayer.isPlaying {
                 videoPlayer.pause()
+                stopPlaypbackTimeChecker()
+            } else {
+                videoPlayer.play()
+                startPlaybackTimeChecker()
+            }
+            
+        } else {
+            if !player.isPlaying {
+                player.play()
+                stopPlaypbackTimeChecker()
             } else {
                 player.pause()
+                startPlaybackTimeChecker()
             }
-            stopPlaypbackTimeChecker()
-        } else {
-            if isVideo {
-                videoPlayer.play()
-            } else {
-                player.play()
-            }
-            startPlaybackTimeChecker()
         }
         changeIconBtnPlay()
     }

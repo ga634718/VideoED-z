@@ -49,6 +49,8 @@ class DurationVideoController: UIViewController {
         player.rate = rate
         playButton.setImage(UIImage(named: "icon_pause"), for: .normal)
         startPlaybackTimeChecker()
+        let x = CMTimeMakeWithSeconds(Float64(trimmerView.endTime!.seconds / Double(player.rate)), preferredTimescale: 600)
+        LblEndTime.text = x.positionalTime
     }
     
     @IBAction func save(_ sender: Any) {
@@ -133,7 +135,7 @@ class DurationVideoController: UIViewController {
         
         let layer: AVPlayerLayer = AVPlayerLayer(player: player)
         layer.frame = CGRect(x: 0, y: 0, width: playerView.frame.width, height: playerView.frame.height)
-//        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        //        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         playerView.layer.sublayers?.forEach({$0.removeFromSuperlayer()})
         playerView.layer.addSublayer(layer)
     }
@@ -176,7 +178,7 @@ class DurationVideoController: UIViewController {
         slider.layer.shadowOffset = CGSize(width: 1, height: 1)
         
     }
-
+    
     func startPlaybackTimeChecker() {
         
         stopPlaybackTimeChecker()
@@ -191,21 +193,21 @@ class DurationVideoController: UIViewController {
         playbackTimeCheckerTimer = nil
     }
     
-//    @objc func onPlaybackTimeChecker() {
-//
-//        guard let startTime = trimmerView.startTime, let endTime = trimmerView.endTime, let player = player else {
-//            return
-//        }
-//
-//        let playBackTime = player.currentTime()
-//        trimmerView.seek(to: playBackTime)
-//
-//        if playBackTime >= endTime {
-//            player.seek(to: startTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-//            trimmerView.seek(to: startTime)
-//        }
-//    }
-//}
+    //    @objc func onPlaybackTimeChecker() {
+    //
+    //        guard let startTime = trimmerView.startTime, let endTime = trimmerView.endTime, let player = player else {
+    //            return
+    //        }
+    //
+    //        let playBackTime = player.currentTime()
+    //        trimmerView.seek(to: playBackTime)
+    //
+    //        if playBackTime >= endTime {
+    //            player.seek(to: startTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+    //            trimmerView.seek(to: startTime)
+    //        }
+    //    }
+    //}
     @objc func onPlaybackTimeChecker() {
         guard let start = trimmerView.startTime, let end = trimmerView.endTime else {
             return

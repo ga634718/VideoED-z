@@ -11,17 +11,17 @@ import UIKit
 @IBDesignable
 
 class DesignableSlider: UISlider {
-
+    
     @IBInspectable var thumbImage: UIImage? {
         didSet {
             setThumbImage(thumbImage, for: .normal)
         }
     }
-
+    
     @IBInspectable var thumbHighlightedImage: UIImage? {
-          didSet {
-              setThumbImage(thumbHighlightedImage, for: .highlighted)
-          }
-      }
-
+        didSet {
+            setThumbImage(thumbHighlightedImage, for: .highlighted)
+        }
+    }
+    
 }
