@@ -92,12 +92,16 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
+        initTrimmerView(asset: asset)
+        initVariable()
+    }
+    
+    func initVariable() {
         if arrURL.count > 0 {
             tableView.reloadData()
             collectionView.reloadData()
         }
-        initTrimmerView(asset: asset)
         position = -1
         hasChooseMusic = false
         isVideo = false
@@ -833,7 +837,7 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
             self.Audios[position].player.rate = rate
         }
         isReload = true
-        viewDidAppear(true)
+        initVariable()
     }
     
     func transformQuality(quality: String) {
@@ -843,7 +847,7 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
     func transformSplitMusic(url: URL) {
         self.arrURL[position] = url
         isReload = true
-        viewDidAppear(true)
+        initVariable()
     }
     
     func isRemove(isRemove: Bool) {

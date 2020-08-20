@@ -731,10 +731,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rJV-1e-fa5" userLabel="View Control">
-                                <rect key="frame" x="0.0" y="503" width="414" height="359"/>
+                                <rect key="frame" x="0.0" y="508" width="414" height="354"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BwC-q0-MMY" userLabel="Trim">
-                                        <rect key="frame" x="0.0" y="279" width="414" height="80"/>
+                                        <rect key="frame" x="0.0" y="274" width="414" height="80"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start time:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JlR-jO-aIq">
                                                 <rect key="frame" x="20" y="0.0" width="60" height="30"/>
@@ -827,7 +827,7 @@
                                         </connections>
                                     </collectionView>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4W7-8p-qQl">
-                                        <rect key="frame" x="0.0" y="70" width="414" height="209"/>
+                                        <rect key="frame" x="0.0" y="70" width="414" height="204"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="cel-7Q-d8U">
@@ -860,11 +860,14 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T0a-fY-RCm">
-                                <rect key="frame" x="0.0" y="44" width="414" height="409"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="414"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="T0a-fY-RCm" secondAttribute="height" id="ThF-TS-eUA"/>
+                                </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1x5-cx-4xB" userLabel="Play">
-                                <rect key="frame" x="0.0" y="453" width="414" height="50"/>
+                                <rect key="frame" x="0.0" y="458" width="414" height="50"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f02-es-E7x">
                                         <rect key="frame" x="182" y="0.0" width="50" height="50"/>
@@ -924,7 +927,6 @@
                             <constraint firstItem="rJV-1e-fa5" firstAttribute="bottom" secondItem="v6c-Fs-qK2" secondAttribute="bottom" id="F1P-tV-GpO"/>
                             <constraint firstItem="T0a-fY-RCm" firstAttribute="top" secondItem="v6c-Fs-qK2" secondAttribute="top" id="HEP-Fw-Cvk"/>
                             <constraint firstItem="rJV-1e-fa5" firstAttribute="leading" secondItem="v6c-Fs-qK2" secondAttribute="leading" id="IZS-tq-2jl"/>
-                            <constraint firstItem="T0a-fY-RCm" firstAttribute="height" secondItem="v6c-Fs-qK2" secondAttribute="height" multiplier="0.5" id="QaY-tU-xst"/>
                             <constraint firstItem="1x5-cx-4xB" firstAttribute="trailing" secondItem="v6c-Fs-qK2" secondAttribute="trailing" id="RBT-81-Cri"/>
                             <constraint firstItem="rJV-1e-fa5" firstAttribute="trailing" secondItem="v6c-Fs-qK2" secondAttribute="trailing" id="Rba-G6-TTa"/>
                             <constraint firstItem="rJV-1e-fa5" firstAttribute="top" secondItem="1x5-cx-4xB" secondAttribute="bottom" id="guu-ae-gL1"/>

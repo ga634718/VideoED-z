@@ -22,6 +22,7 @@ class VolumeViewController: UIViewController {
     
     var delegate: TransformDataDelegate!
     var player = AVAudioPlayer()
+    var videoPlayer = AVPlayer()
     var url: URL!
     
     var volume: Float!
@@ -58,14 +59,16 @@ class VolumeViewController: UIViewController {
         super.viewDidAppear(animated)
         
         addAudioPlayer(with: url)
+        
         initTrimmerView(asset: AVAsset(url: url))
+        
         player.pause()
         changeIconBtnPlay()
     }
     
     
     func changeIconBtnPlay() {
-        if player.isPlaying {
+        if player.isPlaying || videoPlayer.isPlaying {
             btnPlay.setImage(UIImage(named: "icon_pause"), for: .normal)
         } else {
             btnPlay.setImage(UIImage(named: "icon_play"), for: .normal)
@@ -73,18 +76,23 @@ class VolumeViewController: UIViewController {
     }
     
     private func addAudioPlayer(with url: URL) {
+        
         do {
-            try player = AVAudioPlayer(contentsOf: url)
+            if !isVideo {
+                try player = AVAudioPlayer(contentsOf: url)
+            } else {
+                videoPlayer = AVPlayer(url: url)
+            }
         } catch {
             print("Couldn't load file")
         }
         if !isVideo {
             player.numberOfLoops = -1
             player.enableRate = true
-        }
         endTime = CGFloat(player.duration)
         startTime = 0
         initMedia()
+        }
     }
     
     private func initTrimmerView(asset: AVAsset) {
@@ -92,10 +100,13 @@ class VolumeViewController: UIViewController {
         self.trimmerView.delegate = self
         self.trimmerView.themeColor = .white
         self.trimmerView.showsRulerView = false
-        self.trimmerView.maxLength = CGFloat(player.duration)
+        if isVideo {
+            self.trimmerView.maxLength = CGFloat((videoPlayer.currentItem?.asset.duration.seconds)!)
+        } else {
+            self.trimmerView.maxLength = CGFloat(player.duration)
+        }
         self.trimmerView.trackerColor = .white
         self.trimmerView.thumbWidth = 12
-        trimmerView.backgroundColor = .gray
         self.trimmerView.resetSubviews()
         setLabelTime()
     }
@@ -104,8 +115,11 @@ class VolumeViewController: UIViewController {
         
         if !isVideo {
             player.rate = rate! * steps
+            player.volume = volumeRate * volume!
+        } else {
+            videoPlayer.volume = volumeRate * volume!
         }
-        player.volume = volumeRate * volume!
+        
     }
     
     func setLabelTime() {
@@ -114,7 +128,12 @@ class VolumeViewController: UIViewController {
     }
     
     @objc func itemDidFinishPlaying(_ notification: Notification){
-        player.currentTime = 0
+        
+        if isVideo {
+            videoPlayer.seek(to: CMTime.zero)
+        } else {
+            player.currentTime = 0
+        }
     }
     
     // MARK: Playback time checker
@@ -134,22 +153,40 @@ class VolumeViewController: UIViewController {
             return
         }
         
-        let playbackTime = CGFloat(player.currentTime)
+        var playbackTime:CGFloat!
+        if isVideo {
+            playbackTime = CGFloat(videoPlayer.currentTime().seconds)
+        } else {
+            playbackTime = CGFloat(player.currentTime)
+        }
         trimmerView.seek(toTime: playbackTime)
         
         if Float(playbackTime) >= Float(end) {
-            player.currentTime = Double(start)
+            if isVideo {
+                player.currentTime = Double(start)
+            } else {
+                videoPlayer.seek(to: CMTimeMakeWithSeconds(Float64(start), preferredTimescale: 600))
+            }
+
             trimmerView.seek(toTime: start)
         }
     }
     
     // MARK: Handle IBAction
     @IBAction func play(_ sender: Any) {
-        if player.isPlaying {
-            player.pause()
+        if player.isPlaying || videoPlayer.isPlaying {
+            if isVideo {
+                videoPlayer.pause()
+            } else {
+                player.pause()
+            }
             stopPlaypbackTimeChecker()
         } else {
-            player.play()
+            if isVideo {
+                videoPlayer.play()
+            } else {
+                player.play()
+            }
             startPlaybackTimeChecker()
         }
         changeIconBtnPlay()
@@ -157,28 +194,49 @@ class VolumeViewController: UIViewController {
     
     
     @IBAction func screenPressed(_ sender: Any) {
-        player.stop()
         self.dismiss(animated: true)
+        if isVideo {
+            videoPlayer.pause()
+        } else {
+            player.pause()
+        }
     }
     
     
     @IBAction func back(_ sender: Any) {
-        player.stop()
+        
         self.dismiss(animated: true)
+        if isVideo {
+            videoPlayer.pause()
+        } else {
+            player.pause()
+        }
     }
     
     
-    @IBAction func save(_ sender: Any) {   
-        player.stop()
+    @IBAction func save(_ sender: Any) {
         self.dismiss(animated: true) {
-            self.delegate.transform(url: self.url, volume: self.player.volume, rate: self.player.rate)
+            if self.isVideo {
+                self.delegate.transform(url: self.url, volume: self.videoPlayer.volume, rate: 1.0)
+            } else {
+                self.delegate.transform(url: self.url, volume: self.player.volume, rate: self.player.rate)
+            }
+        }
+        if isVideo {
+            videoPlayer.pause()
+        } else {
+            player.pause()
         }
     }
     
     @IBAction func changeVolume(_ sender: Any) {
         sliderVolume.value = roundf(sliderVolume.value)
         volume = sliderVolume.value
-        player.volume = volume * volumeRate
+        if isVideo {
+            videoPlayer.volume = volume * volumeRate
+        } else {
+            player.volume = volume * volumeRate
+        }
     }
     
     
@@ -186,18 +244,30 @@ class VolumeViewController: UIViewController {
         if volume > 0 {
             volume = 0
             sliderVolume.value = volume
-            player.volume = volume
+            if isVideo {
+                videoPlayer.volume = volume
+            } else {
+                player.volume = volume
+            }
         } else {
             volume = 100
             sliderVolume.value = volume
-            player.volume = volume * volumeRate
+            if isVideo {
+                videoPlayer.volume = volume
+            } else {
+                player.volume = volume
+            }
         }
     }
 }
 
 extension VolumeViewController: ICGVideoTrimmerDelegate {
     func trimmerView(_ trimmerView: ICGVideoTrimmerView!, didChangeLeftPosition startTime: CGFloat, rightPosition endTime: CGFloat) {
-        player.pause()
+        if isVideo {
+            videoPlayer.pause()
+        } else {
+            player.pause()
+        }
         changeIconBtnPlay()
         player.currentTime = Double(startTime)
         
