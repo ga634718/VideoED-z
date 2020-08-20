@@ -32,6 +32,7 @@ class VideoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        createAudioSession()
         videoPicker.sourceType = .photoLibrary
         videoPicker.delegate = self
         videoPicker.mediaTypes = ["public.movie"]
@@ -177,6 +178,16 @@ extension VideoViewController {
         arrFuncCell.append(ModelItem(id: 8,img: "Delete", title: "DELETE"))
         
         collectionViewFunc.register(UINib(nibName: "CollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "CollectionViewCell")
+    }
+    
+    func createAudioSession(){
+        do {
+            /// this codes for making this app ready to takeover the device nlPlayer
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback,mode:.moviePlayback ,options: .mixWithOthers)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+             //print("error: \(error.localizedDescription)")
+         }
     }
     
     func setPlayButtonImage(){

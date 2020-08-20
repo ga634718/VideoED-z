@@ -586,7 +586,6 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
             recordPermission()
             if audioRecorder == nil {
                 startRecord()
-                isRecord = true
             } else{
                 finishRecord(success: true)
                 isRecord = false
@@ -608,6 +607,8 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
             audioRecorder = try AVAudioRecorder(url: recordURL!, settings: settings)
             audioRecorder.delegate = self
             audioRecorder.record()
+            isRecord = true
+            collectionView.reloadData()
         } catch{
             finishRecord(success: false)
         }
@@ -739,22 +740,47 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
             let data = arr[indexPath.row]
             let hasAudio = arrURL.count != 0 && position != -1
             
-            cell.updateView(hasAudio: indexPath.row < 3 || hasAudio)
-            
-            if isRecord && indexPath.row == 2 {
-                cell.initView(title: data.title, img: "Stop")
-            } else{
-                cell.initView(title: data.title, img: data.image)
-            }
-            if indexPath.row >= 3 {
-                if hasAudio {
+            if isRecord {
+                cell.isUserInteractionEnabled = false
+                if indexPath.row == 2 {
                     cell.isUserInteractionEnabled = true
+                    cell.initView(title: data.title, img: "Stop")
+                    cell.updateView(hasAudio: true)
                 } else {
+                    cell.initView(title: data.title, img: data.image)
                     cell.isUserInteractionEnabled = false
+                    cell.updateView(hasAudio: false)
                 }
             } else {
-                cell.isUserInteractionEnabled = true
+                cell.initView(title: data.title, img: data.image)
+                if indexPath.row >= 3 {
+                    if hasAudio {
+                        cell.isUserInteractionEnabled = true
+                    } else {
+                        cell.isUserInteractionEnabled = false
+                    }
+                } else {
+                    cell.isUserInteractionEnabled = true
+                }
+                cell.updateView(hasAudio: indexPath.row < 3 || hasAudio)
             }
+            
+//            cell.updateView(hasAudio: indexPath.row < 3 || hasAudio)
+//
+//            if isRecord && indexPath.row == 2 {
+//                cell.initView(title: data.title, img: "Stop")
+//            } else{
+//                cell.initView(title: data.title, img: data.image)
+//            }
+//            if indexPath.row >= 3 {
+//                if hasAudio {
+//                    cell.isUserInteractionEnabled = true
+//                } else {
+//                    cell.isUserInteractionEnabled = false
+//                }
+//            } else {
+//                cell.isUserInteractionEnabled = true
+//            }
             return cell
         }
         return UICollectionViewCell()
@@ -785,7 +811,7 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
             gotoItunesView()
         case 2:
             RecordAudio()
-            collectionView.reloadItems(at: [indexPath])
+//            collectionView.reloadItems(at: [indexPath])
         case 3:
             gotoEditVolume()
         case 4:
