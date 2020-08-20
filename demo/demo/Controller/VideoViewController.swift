@@ -108,7 +108,7 @@ extension VideoViewController: UICollectionViewDelegate, UICollectionViewDataSou
         case 1:
             navigateOtherView(view: "MainAudioView")
         case 2:
-            navigateOtherView(view: "Duration")
+            navigateOtherView(view: "DURATION")
         case 3:
             navigateOtherView(view: "CROP")
         case 4:
@@ -116,7 +116,7 @@ extension VideoViewController: UICollectionViewDelegate, UICollectionViewDataSou
         case 5:
             navigateOtherView(view: "BGCOLOR")
         case 6:
-            navigateOtherView(view: "Duplicate")
+            navigateOtherView(view: "DUPLICATE")
         case 7:
             navigateOtherView(view: "TRIMMER")
         default:
@@ -290,7 +290,7 @@ extension VideoViewController {
     func navigateOtherView(view: String){
         let sb = UIStoryboard(name: "Main", bundle: nil)
         switch view {
-        case "Duration":
+        case "DURATION":
             let View = sb.instantiateViewController(withIdentifier: view) as! DurationVideoController
             View.path = self.fixedVideoURL
             View.delegate = self
@@ -310,7 +310,7 @@ extension VideoViewController {
             View.path = self.fixedVideoURL
             View.delegate = self
             self.navigationController?.pushViewController(View, animated: true)
-        case "Duplicate":
+        case "DUPLICATE":
             let View = sb.instantiateViewController(withIdentifier: view) as! DuplicateVideoViewController
             View.path = self.fixedVideoURL
             View.delegate = self
@@ -408,7 +408,7 @@ extension VideoViewController: ChooseQualityDelegate{
             serialQueue.async {
                 MobileFFmpeg.execute(str)
                 let x = (self.fileManage.saveToDocumentDirectory(url: output))
-                self.fileManage.moveToLibrary(destinationURL: x)
+                CustomPhotoAlbum.sharedInstance.saveVideo(url: x)
                 self.fileManage.clearTempDirectory()
                 DispatchQueue.main.async {
                     ZKProgressHUD.dismiss()
