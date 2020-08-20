@@ -2523,14 +2523,14 @@
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="324"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rSw-g4-BNL" customClass="ThumbSelectorView" customModule="PryntTrimmerView">
-                                                <rect key="frame" x="5" y="227" width="404" height="97"/>
+                                                <rect key="frame" x="5" y="259" width="404" height="65"/>
                                                 <color key="backgroundColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d4c-HQ-Uxy">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="227"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="259"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fQE-1C-wz8" userLabel="Save">
-                                                        <rect key="frame" x="354" y="88.5" width="50" height="50"/>
+                                                        <rect key="frame" x="354" y="104.5" width="50" height="50"/>
                                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="61C-Wy-fna"/>
@@ -2545,7 +2545,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GhD-Vy-cc3">
-                                                        <rect key="frame" x="181.5" y="88.5" width="51" height="50"/>
+                                                        <rect key="frame" x="181.5" y="104.5" width="51" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="Gul-2Z-pBC"/>
                                                         </constraints>
@@ -2557,7 +2557,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0fS-Y4-elo">
-                                                        <rect key="frame" x="10" y="88.5" width="50" height="50"/>
+                                                        <rect key="frame" x="10" y="104.5" width="50" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="IrP-18-Ua2"/>
                                                             <constraint firstAttribute="width" secondItem="0fS-Y4-elo" secondAttribute="height" id="SEF-Wf-oJm"/>
@@ -2589,7 +2589,7 @@
                                             <constraint firstItem="d4c-HQ-Uxy" firstAttribute="top" secondItem="0Ot-dI-Hbx" secondAttribute="top" id="NFl-jA-DII"/>
                                             <constraint firstAttribute="trailing" secondItem="d4c-HQ-Uxy" secondAttribute="trailing" id="O8Y-zw-Ewi"/>
                                             <constraint firstAttribute="trailing" secondItem="rSw-g4-BNL" secondAttribute="trailing" constant="5" id="PNo-pn-c8h"/>
-                                            <constraint firstItem="rSw-g4-BNL" firstAttribute="height" secondItem="0Ot-dI-Hbx" secondAttribute="height" multiplier="0.3" id="Sv5-Kt-noj"/>
+                                            <constraint firstItem="rSw-g4-BNL" firstAttribute="height" secondItem="0Ot-dI-Hbx" secondAttribute="height" multiplier="0.2" id="Sv5-Kt-noj"/>
                                             <constraint firstItem="rSw-g4-BNL" firstAttribute="top" secondItem="d4c-HQ-Uxy" secondAttribute="bottom" id="wVo-bK-lwp"/>
                                         </constraints>
                                     </view>
