@@ -417,7 +417,7 @@ extension VideoViewController: ChooseQualityDelegate{
             serialQueue.async {
                 MobileFFmpeg.execute(str)
                 let x = (self.fileManage.saveToDocumentDirectory(url: output))
-                print(x)
+                CustomPhotoAlbum.sharedInstance.saveVideo(url: x)
                 self.fileManage.clearTempDirectory()
                 DispatchQueue.main.async {
                     ZKProgressHUD.dismiss()
