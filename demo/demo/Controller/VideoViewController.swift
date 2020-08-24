@@ -404,13 +404,11 @@ extension VideoViewController: ChooseQualityDelegate{
 //            videoTimelineView.stop()
             
             let time = currentDate()
-            let type = ".MOV"
+            let type = ".mp4"
             
             let output = self.fileManage.createUrlInApp(name: "\(time)\(type)")
             
-//            let parameter = SaveParameter(volume: self.volume! * self.volumeRate, rate: self.rate! * self.steps, quality: self.quality)
-            
-            let str = "-y -i \(self.fixedVideoURL!) -filter_complex \"[0:v]scale=\(self.quality)[v]\" -map \"[v]\" -preset ultrafast \(output)"
+            let str = "-y -i \(self.fixedVideoURL!) -vf \"scale=\(self.quality)\" -preset ultrafast \(output)"
             
             let serialQueue = DispatchQueue(label: "serialQueue")
             
@@ -419,7 +417,7 @@ extension VideoViewController: ChooseQualityDelegate{
             serialQueue.async {
                 MobileFFmpeg.execute(str)
                 let x = (self.fileManage.saveToDocumentDirectory(url: output))
-                CustomPhotoAlbum.sharedInstance.saveVideo(url: x)
+                print(x)
                 self.fileManage.clearTempDirectory()
                 DispatchQueue.main.async {
                     ZKProgressHUD.dismiss()
