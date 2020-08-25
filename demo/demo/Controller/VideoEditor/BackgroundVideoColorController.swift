@@ -120,7 +120,8 @@ class BackgroundVideoColorController: UIViewController {
             removeFileIfExists(fileURL: final)
             
             if ratio == 1 {
-                self.navigationController?.popViewController(animated: true)
+                print("No BG")
+                 s = "-i \(filePath)  -aspect 1:1 -vf \"pad=iw:ih:(ow-iw)/2:(oh-ih)/2:color=\(self.str)\" \(final)"
             }
             else if ratio > 1{
                 s = "-i \(filePath)  -aspect 1:1 -vf \"pad=iw:ih*\(ratio!):(ow-iw)/2:(oh-ih)/2:color=\(self.str)\" \(final)"

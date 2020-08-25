@@ -68,13 +68,13 @@ class TrimmerViewController: AssetSelectionVideoViewController {
         if (startTime == 0 && endTime == durationTime) {
             self.navigationController?.popViewController(animated: true)
         } else if startTime == 0 {
-            let cmdCutVideo = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(final)"
+            let cmdCutVideo1 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(final)"
             DispatchQueue.main.async {
                 ZKProgressHUD.show()
             }
             let serialQueue = DispatchQueue(label: "serialQueue")
             serialQueue.async {
-                MobileFFmpeg.execute(cmdCutVideo)
+                MobileFFmpeg.execute(cmdCutVideo1)
                 self.trimURL = final
                 self.isSave = true
                 DispatchQueue.main.async {
@@ -85,6 +85,7 @@ class TrimmerViewController: AssetSelectionVideoViewController {
                     self.setlabel()
                 }
             }
+            print(lateTime)
         } else if endTime == durationTime {
             
             let cmdCutVideo = "-ss \(zero) -i \(filePath) -to \(startTime) -c copy \(final)"

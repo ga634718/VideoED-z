@@ -42,7 +42,6 @@ class DurationVideoController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    
     @IBAction func changeSpeed(_ sender: UISlider) {
         slider.value = roundf(slider.value)
         rate = slider.value * 0.1
@@ -118,8 +117,7 @@ class DurationVideoController: UIViewController {
         }
         changeIconBtnPlay()
     }
-    
-    
+
     func loadAsset (_ asset: AVAsset) {
         addVideoPlayer(with: asset, playerView: playerView)
         trimmerView.asset = asset
@@ -165,18 +163,14 @@ class DurationVideoController: UIViewController {
         }
     }
     func customizeSlider(sliderName:UISlider) {
-        // change UIbutton propertie
         let color = (UIColor(red: 252/255, green: 186/255, blue: 3/255, alpha: 1.0))
-        
         slider.layer.cornerRadius = 10
         slider.layer.borderWidth = 0.8
         slider.layer.borderColor = color.cgColor
-        
         slider.layer.shadowColor = color.cgColor
         slider.layer.shadowOpacity = 0.8
         slider.layer.shadowRadius = 7
         slider.layer.shadowOffset = CGSize(width: 1, height: 1)
-        
     }
     
     func startPlaybackTimeChecker() {
@@ -192,22 +186,7 @@ class DurationVideoController: UIViewController {
         playbackTimeCheckerTimer?.invalidate()
         playbackTimeCheckerTimer = nil
     }
-    
-    //    @objc func onPlaybackTimeChecker() {
-    //
-    //        guard let startTime = trimmerView.startTime, let endTime = trimmerView.endTime, let player = player else {
-    //            return
-    //        }
-    //
-    //        let playBackTime = player.currentTime()
-    //        trimmerView.seek(to: playBackTime)
-    //
-    //        if playBackTime >= endTime {
-    //            player.seek(to: startTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-    //            trimmerView.seek(to: startTime)
-    //        }
-    //    }
-    //}
+ 
     @objc func onPlaybackTimeChecker() {
         guard let start = trimmerView.startTime, let end = trimmerView.endTime else {
             return

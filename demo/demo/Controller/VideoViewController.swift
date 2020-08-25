@@ -52,6 +52,7 @@ class VideoViewController: UIViewController {
     
     @IBAction func btnBack(_ sender: Any) {
         resetPlayer()
+        clearTempDirectory()
         self.navigationController?.popToRootViewController(animated: true)
     }
     
