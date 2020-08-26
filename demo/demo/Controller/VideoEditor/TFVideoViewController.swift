@@ -61,7 +61,7 @@ class TFVideoViewController: AssetSelectionVideoViewController {
             debugPrint("Video not found")
             return
         }
- 
+        
         let startTime = CGFloat(CMTimeGetSeconds(trimmerView.startTime!))
         let endTime = CGFloat(CMTimeGetSeconds(trimmerView.endTime!))
         let tftime = CGFloat(CMTimeGetSeconds(trimmerView.endTime! - trimmerView.startTime!))
@@ -91,19 +91,66 @@ class TFVideoViewController: AssetSelectionVideoViewController {
         removeFileIfExists(fileURL: urlCrop2)
         let final = createUrlInApp(name: "\(currentDate()).mp4")
         removeFileIfExists(fileURL: final)
-        
-        if (startTime == 0 && endTime == durationTime) {
-            if str == "" {
-                print("No Edit")
-                self.navigationController?.popViewController(animated: true)
-            } else {
+        if str == "" {
+            print("hmm")
+        }else {
+            if (startTime == 0 && endTime == durationTime) {
+                if str == "" {
+                    print("No Edit")
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    DispatchQueue.main.async {
+                        ZKProgressHUD.show()
+                    }
+                    let transform = "-i \(filePath) -vf \(str) -codec:a copy \(final)"
+                    let serialQueue = DispatchQueue(label: "serialQueue")
+                    serialQueue.async {
+                        MobileFFmpeg.execute(transform)
+                        self.tfURL = final
+                        self.isSave = true
+                        self.delegate.transformReal(url: self.tfURL!)
+                        DispatchQueue.main.async {
+                            ZKProgressHUD.dismiss(0.5)
+                            ZKProgressHUD.showSuccess()
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                }
+            } else if startTime == 0 {
                 DispatchQueue.main.async {
                     ZKProgressHUD.show()
                 }
-                let transform = "-i \(filePath) -vf \(str) -codec:a copy \(final)"
                 let serialQueue = DispatchQueue(label: "serialQueue")
                 serialQueue.async {
+                    let cmdVideoTF = "-ss 0 -i \(filePath) -to \(tftime) -c copy \(url2)"
+                    MobileFFmpeg.execute(cmdVideoTF)
+                    let transform = "-i \(url2) -vf \(self.str) -codec:a copy \(urltf)"
                     MobileFFmpeg.execute(transform)
+                    self.ratio1 = self.getVideoRatio(url: urltf)
+                    let urlFinal1 = self.squareVideo(url: urltf, ratio: self.ratio1)
+                    
+                    
+                    let cmdCutVideo1 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(url1)"
+                    MobileFFmpeg.execute(cmdCutVideo1)
+                    self.ratio2 = self.getVideoRatio(url: url1)
+                    let urlFinal2 = self.squareVideo(url: url1, ratio: self.ratio2)
+                    
+                    let s1 = "-i \(urlFinal1) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl1)"
+                    let s2 = "-i \(urlFinal2) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl2)"
+                    let str = "-i \"concat:\(furl1)|\(furl2)\" -c copy \(furl3)"
+                    let cmdFinal = "-i \(furl3) \(final)"
+                    
+                    MobileFFmpeg.execute(s1)
+                    MobileFFmpeg.execute(s2)
+                    MobileFFmpeg.execute(str)
+                    MobileFFmpeg.execute(cmdFinal)
+                    self.removeFileIfExists(fileURL: url1)
+                    self.removeFileIfExists(fileURL: url2)
+                    self.removeFileIfExists(fileURL: furl1)
+                    self.removeFileIfExists(fileURL: furl2)
+                    self.removeFileIfExists(fileURL: furl3)
+                    self.removeFileIfExists(fileURL: url1)
+                    self.removeFileIfExists(fileURL: urltf)
                     self.tfURL = final
                     self.isSave = true
                     self.delegate.transformReal(url: self.tfURL!)
@@ -113,146 +160,102 @@ class TFVideoViewController: AssetSelectionVideoViewController {
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
-            }
-        } else if startTime == 0 {
-            DispatchQueue.main.async {
-                ZKProgressHUD.show()
-            }
-            let serialQueue = DispatchQueue(label: "serialQueue")
-            serialQueue.async {
-                let cmdVideoTF = "-ss 0 -i \(filePath) -to \(tftime) -c copy \(url2)"
-                MobileFFmpeg.execute(cmdVideoTF)
-                let transform = "-i \(url2) -vf \(self.str) -codec:a copy \(urltf)"
-                MobileFFmpeg.execute(transform)
-                self.ratio1 = self.getVideoRatio(url: urltf)
-                let urlFinal1 = self.squareVideo(url: urltf, ratio: self.ratio1)
-                
-                
-                let cmdCutVideo1 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(url1)"
-                MobileFFmpeg.execute(cmdCutVideo1)
-                self.ratio2 = self.getVideoRatio(url: url1)
-                let urlFinal2 = self.squareVideo(url: url1, ratio: self.ratio2)
-                
-                let s1 = "-i \(urlFinal1) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl1)"
-                let s2 = "-i \(urlFinal2) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl2)"
-                let str = "-i \"concat:\(furl1)|\(furl2)\" -c copy \(furl3)"
-                let cmdFinal = "-i \(furl3) \(final)"
-                
-                MobileFFmpeg.execute(s1)
-                MobileFFmpeg.execute(s2)
-                MobileFFmpeg.execute(str)
-                MobileFFmpeg.execute(cmdFinal)
-                self.removeFileIfExists(fileURL: url1)
-                self.removeFileIfExists(fileURL: url2)
-                self.removeFileIfExists(fileURL: furl1)
-                self.removeFileIfExists(fileURL: furl2)
-                self.removeFileIfExists(fileURL: furl3)
-                self.removeFileIfExists(fileURL: url1)
-                self.removeFileIfExists(fileURL: urltf)
-                self.tfURL = final
-                self.isSave = true
-                self.delegate.transformReal(url: self.tfURL!)
+            } else if endTime == durationTime {
                 DispatchQueue.main.async {
-                    ZKProgressHUD.dismiss(0.5)
-                    ZKProgressHUD.showSuccess()
-                    self.navigationController?.popViewController(animated: true)
+                    ZKProgressHUD.show()
                 }
-            }
-        } else if endTime == durationTime {
-            DispatchQueue.main.async {
-                ZKProgressHUD.show()
-            }
-           
-            let serialQueue = DispatchQueue(label: "serialQueue")
-            serialQueue.async {
-                let cmdVideoTF = "-ss \(startTime) -i \(filePath) -to \(tftime) -c copy \(url2)"
-                MobileFFmpeg.execute(cmdVideoTF)
-                let transform = "-i \(url2) -vf \(self.str) -codec:a copy \(urltf)"
-                MobileFFmpeg.execute(transform)
-                self.ratio1 = self.getVideoRatio(url: urltf)
-                let urlFinal1 = self.squareVideo(url: urltf, ratio: self.ratio1)
                 
-                
-                let cmdCutVideo1 = "-ss 0 -i \(filePath) -to \(startTime) -c copy \(url1)"
-                MobileFFmpeg.execute(cmdCutVideo1)
-                self.ratio2 = self.getVideoRatio(url: url1)
-                let urlFinal2 = self.squareVideo(url: url1, ratio: self.ratio2)
-                
-                let s1 = "-i \(urlFinal1) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl1)"
-                let s2 = "-i \(urlFinal2) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl2)"
-                let str = "-i \"concat:\(furl2)|\(furl1)\" -c copy \(furl3)"
-                let cmdFinal = "-i \(furl3) \(final)"
-                
-                MobileFFmpeg.execute(s1)
-                MobileFFmpeg.execute(s2)
-                MobileFFmpeg.execute(str)
-                MobileFFmpeg.execute(cmdFinal)
-                self.removeFileIfExists(fileURL: url1)
-                self.removeFileIfExists(fileURL: url2)
-                self.removeFileIfExists(fileURL: furl1)
-                self.removeFileIfExists(fileURL: furl2)
-                self.removeFileIfExists(fileURL: furl3)
-                self.removeFileIfExists(fileURL: urltf)
-                self.removeFileIfExists(fileURL: url1)
-                self.tfURL = final
-                self.isSave = true
-                self.delegate.transformReal(url: self.tfURL!)
-                DispatchQueue.main.async {
-                    ZKProgressHUD.dismiss(0.5)
-                    ZKProgressHUD.showSuccess()
-                    self.navigationController?.popViewController(animated: true)
+                let serialQueue = DispatchQueue(label: "serialQueue")
+                serialQueue.async {
+                    let cmdVideoTF = "-ss \(startTime) -i \(filePath) -to \(tftime) -c copy \(url2)"
+                    MobileFFmpeg.execute(cmdVideoTF)
+                    let transform = "-i \(url2) -vf \(self.str) -codec:a copy \(urltf)"
+                    MobileFFmpeg.execute(transform)
+                    self.ratio1 = self.getVideoRatio(url: urltf)
+                    let urlFinal1 = self.squareVideo(url: urltf, ratio: self.ratio1)
+                    
+                    
+                    let cmdCutVideo1 = "-ss 0 -i \(filePath) -to \(startTime) -c copy \(url1)"
+                    MobileFFmpeg.execute(cmdCutVideo1)
+                    self.ratio2 = self.getVideoRatio(url: url1)
+                    let urlFinal2 = self.squareVideo(url: url1, ratio: self.ratio2)
+                    
+                    let s1 = "-i \(urlFinal1) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl1)"
+                    let s2 = "-i \(urlFinal2) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl2)"
+                    let str = "-i \"concat:\(furl2)|\(furl1)\" -c copy \(furl3)"
+                    let cmdFinal = "-i \(furl3) \(final)"
+                    
+                    MobileFFmpeg.execute(s1)
+                    MobileFFmpeg.execute(s2)
+                    MobileFFmpeg.execute(str)
+                    MobileFFmpeg.execute(cmdFinal)
+                    self.removeFileIfExists(fileURL: url1)
+                    self.removeFileIfExists(fileURL: url2)
+                    self.removeFileIfExists(fileURL: furl1)
+                    self.removeFileIfExists(fileURL: furl2)
+                    self.removeFileIfExists(fileURL: furl3)
+                    self.removeFileIfExists(fileURL: urltf)
+                    self.removeFileIfExists(fileURL: url1)
+                    self.tfURL = final
+                    self.isSave = true
+                    self.delegate.transformReal(url: self.tfURL!)
+                    DispatchQueue.main.async {
+                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.showSuccess()
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
-            }
-        } else {
-            DispatchQueue.main.async {
-                ZKProgressHUD.show()
-            }
-
-            let serialQueue = DispatchQueue(label: "serialQueue")
-            serialQueue.async {
-                let cmdVideoTF = "-ss \(startTime) -i \(filePath) -to \(tftime) -c copy \(url2)"
-                MobileFFmpeg.execute(cmdVideoTF)
-                let transform = "-i \(url2) -vf \(self.str) -codec:a copy \(urltf)"
-                MobileFFmpeg.execute(transform)
-                self.ratio1 = self.getVideoRatio(url: urltf)
-                let urlFinal1 = self.squareVideo(url: urltf, ratio: self.ratio1)
-            
-                let cmdCutVideo1 = "-ss 0 -i \(filePath) -to \(startTime) -c copy \(url1)"
-                MobileFFmpeg.execute(cmdCutVideo1)
-                self.ratio2 = self.getVideoRatio(url: url1)
-                let urlFinal2 = self.squareVideo(url: url1, ratio: self.ratio2)
-                
-                let cmdCutVideo2 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(url3)"
-                MobileFFmpeg.execute(cmdCutVideo2)
-                self.ratio3 = self.getVideoRatio(url: url3)
-                let urlFinal3 = self.squareVideo(url: url3, ratio: self.ratio3)
-                
-                let s1 = "-i \(urlFinal1) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl1)"
-                let s2 = "-i \(urlFinal2) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl2)"
-                let s3 = "-i \(urlFinal3) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl4)"
-                let str = "-i \"concat:\(furl2)|\(furl1)|\(furl4)\" -c copy \(furl3)"
-                
-                let cmdFinal = "-i \(furl3) \(final)"
-                MobileFFmpeg.execute(s1)
-                MobileFFmpeg.execute(s2)
-                MobileFFmpeg.execute(s3)
-                MobileFFmpeg.execute(str)
-                MobileFFmpeg.execute(cmdFinal)
-                self.removeFileIfExists(fileURL: url1)
-                self.removeFileIfExists(fileURL: url2)
-                self.removeFileIfExists(fileURL: furl1)
-                self.removeFileIfExists(fileURL: furl2)
-                self.removeFileIfExists(fileURL: furl3)
-                self.removeFileIfExists(fileURL: furl4)
-                self.removeFileIfExists(fileURL: url1)
-                self.removeFileIfExists(fileURL: urltf)
-                self.tfURL = final
-                self.isSave = true
-                self.delegate.transformReal(url: self.tfURL!)
+            } else {
                 DispatchQueue.main.async {
-                    ZKProgressHUD.dismiss(0.5)
-                    ZKProgressHUD.showSuccess()
-                    self.navigationController?.popViewController(animated: true)
+                    ZKProgressHUD.show()
+                }
+                
+                let serialQueue = DispatchQueue(label: "serialQueue")
+                serialQueue.async {
+                    let cmdVideoTF = "-ss \(startTime) -i \(filePath) -to \(tftime) -c copy \(url2)"
+                    MobileFFmpeg.execute(cmdVideoTF)
+                    let transform = "-i \(url2) -vf \(self.str) -codec:a copy \(urltf)"
+                    MobileFFmpeg.execute(transform)
+                    self.ratio1 = self.getVideoRatio(url: urltf)
+                    let urlFinal1 = self.squareVideo(url: urltf, ratio: self.ratio1)
+                    
+                    let cmdCutVideo1 = "-ss 0 -i \(filePath) -to \(startTime) -c copy \(url1)"
+                    MobileFFmpeg.execute(cmdCutVideo1)
+                    self.ratio2 = self.getVideoRatio(url: url1)
+                    let urlFinal2 = self.squareVideo(url: url1, ratio: self.ratio2)
+                    
+                    let cmdCutVideo2 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(url3)"
+                    MobileFFmpeg.execute(cmdCutVideo2)
+                    self.ratio3 = self.getVideoRatio(url: url3)
+                    let urlFinal3 = self.squareVideo(url: url3, ratio: self.ratio3)
+                    
+                    let s1 = "-i \(urlFinal1) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl1)"
+                    let s2 = "-i \(urlFinal2) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl2)"
+                    let s3 = "-i \(urlFinal3) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl4)"
+                    let str = "-i \"concat:\(furl2)|\(furl1)|\(furl4)\" -c copy \(furl3)"
+                    
+                    let cmdFinal = "-i \(furl3) \(final)"
+                    MobileFFmpeg.execute(s1)
+                    MobileFFmpeg.execute(s2)
+                    MobileFFmpeg.execute(s3)
+                    MobileFFmpeg.execute(str)
+                    MobileFFmpeg.execute(cmdFinal)
+                    self.removeFileIfExists(fileURL: url1)
+                    self.removeFileIfExists(fileURL: url2)
+                    self.removeFileIfExists(fileURL: furl1)
+                    self.removeFileIfExists(fileURL: furl2)
+                    self.removeFileIfExists(fileURL: furl3)
+                    self.removeFileIfExists(fileURL: furl4)
+                    self.removeFileIfExists(fileURL: url1)
+                    self.removeFileIfExists(fileURL: urltf)
+                    self.tfURL = final
+                    self.isSave = true
+                    self.delegate.transformReal(url: self.tfURL!)
+                    DispatchQueue.main.async {
+                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.showSuccess()
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
             }
         }
