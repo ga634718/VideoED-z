@@ -186,10 +186,10 @@ class VolumeViewController: UIViewController {
         } else {
             if !player.isPlaying {
                 player.play()
-                stopPlaypbackTimeChecker()
+                startPlaybackTimeChecker()
             } else {
                 player.pause()
-                startPlaybackTimeChecker()
+                stopPlaypbackTimeChecker()
             }
         }
         changeIconBtnPlay()

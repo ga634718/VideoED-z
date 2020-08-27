@@ -210,6 +210,14 @@ extension VideoViewController {
     }
     
     func insertVideo() -> URL {
+        let currentTime  = CGFloat(CMTimeGetSeconds(CMTime(seconds: videoTimelineView.currentTime, preferredTimescale: 1)))
+        let duration = CGFloat(CMTimeGetSeconds(CMTime(seconds: videoTimelineView.duration, preferredTimescale: 1)))
+        
+        let u1 = createUrlInApp(name: "vid1.ts")
+        removeFileIfExists(fileURL: u1)
+        let u2 = createUrlInApp(name: "vid2.ts")
+        removeFileIfExists(fileURL: u2)
+        
         let furl1 = createUrlInApp(name: "video1.ts")
         removeFileIfExists(fileURL: furl1)
         let furl2 = createUrlInApp(name: "video2.ts")
@@ -219,14 +227,20 @@ extension VideoViewController {
         let furl = createUrlInApp(name: "video.MOV")
         removeFileIfExists(fileURL: furl)
         
-        let url = squareVideo(url: originalVideoURL as URL, ratio: ratio1)
+        let url = squareVideo(url: fixedVideoURL as URL, ratio: ratio1)
         let url1 = squareVideo(url: secondVideoURL as URL, ratio: ratio2)
         
         let s1 = "-i \(url) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl1)"
         MobileFFmpeg.execute(s1)
         let s2 = "-i \(url1) -c:v mpeg2video -qscale:v 2 -c:a mp2 -b:a 192k \(furl2)"
         MobileFFmpeg.execute(s2)
-        let str = "-i \"concat:\(furl1)|\(furl2)\" -c copy \(furl3)"
+        
+        let s3 = "-i \(furl1) -ss 0 -t \(currentTime) -async 1 -c copy \(u1)"
+        MobileFFmpeg.execute(s3)
+        let s4 = "-i \(furl1) -ss \(currentTime) -t \(duration) -async 1 -c copy \(u2)"
+        MobileFFmpeg.execute(s4)
+        
+        let str = "-i \"concat:\(u1)|\(furl2)|\(u2)\" -c copy \(furl3)"
         MobileFFmpeg.execute(str)
         let str1 = "-i \(furl3) \(furl)"
         MobileFFmpeg.execute(str1)
@@ -238,6 +252,8 @@ extension VideoViewController {
         removeFileIfExists(fileURL: furl3)
         removeFileIfExists(fileURL: url)
         removeFileIfExists(fileURL: url1)
+        removeFileIfExists(fileURL: u1)
+        removeFileIfExists(fileURL: u2)
         return furl
     }
 

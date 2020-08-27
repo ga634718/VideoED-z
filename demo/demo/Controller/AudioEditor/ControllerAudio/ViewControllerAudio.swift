@@ -95,6 +95,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         addVieoPlayer(asset: asset, playerView: playerView)
         initTrimmerView(asset: asset)
         initVariable()
+        
     }
     
     func initVariable() {
@@ -619,7 +620,10 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         audioRecorder = nil
         
         if success {
-            arrURL.append(recordURL!)
+            let tempURL = fileManage.createUrlInApp(name: "tempRecord.mp3")
+            let str = "-i \(recordURL!) -c:a libmp3lame -q:a 8 \(tempURL)"
+            MobileFFmpeg.execute(str)
+            arrURL.append(tempURL)
             tableView.reloadData()
             collectionView.reloadData()
         } else{
@@ -937,6 +941,7 @@ extension ViewControllerAudio: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        isVideo = false
         
         if arrURL.count > 0 {
             
