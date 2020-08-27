@@ -110,8 +110,9 @@ class TFVideoViewController: AssetSelectionVideoViewController {
                         self.isSave = true
                         self.delegate.transformReal(url: self.tfURL!)
                         DispatchQueue.main.async {
-                            ZKProgressHUD.dismiss(0.5)
+                            ZKProgressHUD.dismiss()
                             ZKProgressHUD.showSuccess()
+                            ZKProgressHUD.dismiss(0.5)
                             self.navigationController?.popViewController(animated: true)
                         }
                     }
@@ -155,8 +156,9 @@ class TFVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.tfURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
@@ -200,8 +202,9 @@ class TFVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.tfURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
@@ -252,8 +255,9 @@ class TFVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.tfURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.navigationController?.popViewController(animated: true)
                     }
                 }

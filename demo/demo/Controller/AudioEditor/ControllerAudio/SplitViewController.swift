@@ -202,6 +202,7 @@ class SplitViewController: UIViewController {
                 ZKProgressHUD.dismiss()
                 self.initTrimmerView(asset: AVAsset(url: self.url))
                 ZKProgressHUD.showSuccess()
+                ZKProgressHUD.dismiss(0.5)
             }
         }
         

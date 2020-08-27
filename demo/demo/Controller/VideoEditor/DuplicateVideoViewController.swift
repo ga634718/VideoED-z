@@ -88,8 +88,9 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
@@ -110,8 +111,9 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
@@ -134,8 +136,9 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
@@ -158,8 +161,9 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.player.pause()
                         self.navigationController?.popViewController(animated: true)
                     }
@@ -219,8 +223,9 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.player.pause()
                         self.navigationController?.popViewController(animated: true)
                     }
@@ -243,8 +248,9 @@ class DuplicateVideoViewController: AssetSelectionVideoViewController {
                     self.isSave = true
                     self.delegate.transformReal(url: self.duplicateURL!)
                     DispatchQueue.main.async {
-                        ZKProgressHUD.dismiss(0.5)
+                        ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
+                        ZKProgressHUD.dismiss(0.5)
                         self.player.pause()
                         self.navigationController?.popViewController(animated: true)
                     }
