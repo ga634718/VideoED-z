@@ -158,11 +158,10 @@ class BackgroundVideoColorController: UIViewController {
         removeFileIfExists(fileURL: final)
         
         if str == "" {
-            print("No BG")
+            self.navigationController?.popViewController(animated: true)
         } else {
             if (startTime == 0 && endTime == durationTime) {
                 if str == "" {
-                    print("No Edit")
                     self.navigationController?.popViewController(animated: true)
                 } else {
                     DispatchQueue.main.async {

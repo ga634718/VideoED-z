@@ -92,11 +92,10 @@ class TFVideoViewController: AssetSelectionVideoViewController {
         let final = createUrlInApp(name: "\(currentDate()).mp4")
         removeFileIfExists(fileURL: final)
         if str == "" {
-            print("hmm")
+            self.navigationController?.popViewController(animated: true)
         }else {
             if (startTime == 0 && endTime == durationTime) {
                 if str == "" {
-                    print("No Edit")
                     self.navigationController?.popViewController(animated: true)
                 } else {
                     DispatchQueue.main.async {
@@ -129,8 +128,7 @@ class TFVideoViewController: AssetSelectionVideoViewController {
                     MobileFFmpeg.execute(transform)
                     self.ratio1 = self.getVideoRatio(url: urltf)
                     let urlFinal1 = self.squareVideo(url: urltf, ratio: self.ratio1)
-                    
-                    
+      
                     let cmdCutVideo1 = "-ss \(endTime) -i \(filePath) -to \(lateTime) -c copy \(url1)"
                     MobileFFmpeg.execute(cmdCutVideo1)
                     self.ratio2 = self.getVideoRatio(url: url1)

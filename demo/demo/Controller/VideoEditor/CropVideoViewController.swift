@@ -151,10 +151,9 @@ class CropVideoViewController: AssetSelectionVideoViewController {
         player.pause()
         
         if a == -1 {
-            
+            self.navigationController?.popViewController(animated: true)
         } else {
             if (startTime == 0 && endTime == durationTime) {
-                
                 DispatchQueue.main.async {
                     ZKProgressHUD.show()
                 }
