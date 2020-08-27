@@ -78,8 +78,9 @@ class TrimmerViewController: AssetSelectionVideoViewController {
                 self.trimURL = final
                 self.isSave = true
                 DispatchQueue.main.async {
-                    ZKProgressHUD.dismiss(0.5)
+                    ZKProgressHUD.dismiss()
                     ZKProgressHUD.showSuccess()
+                    ZKProgressHUD.dismiss(0.5)
                     let asset = AVAsset(url: final as URL)
                     self.loadAsset(asset)
                     self.setlabel()
@@ -99,8 +100,9 @@ class TrimmerViewController: AssetSelectionVideoViewController {
                 self.trimURL = final
                 self.isSave = true
                 DispatchQueue.main.async {
-                    ZKProgressHUD.dismiss(0.5)
+                    ZKProgressHUD.dismiss()
                     ZKProgressHUD.showSuccess()
+                    ZKProgressHUD.dismiss(0.5)
                     let asset = AVAsset(url: final as URL)
                     self.loadAsset(asset)
                     self.setlabel()
@@ -122,8 +124,9 @@ class TrimmerViewController: AssetSelectionVideoViewController {
                 self.trimURL = final
                 self.isSave = true
                 DispatchQueue.main.async {
-                    ZKProgressHUD.dismiss(0.5)
+                    ZKProgressHUD.dismiss()
                     ZKProgressHUD.showSuccess()
+                    ZKProgressHUD.dismiss(0.5)
                     let asset = AVAsset(url: final as URL)
                     self.loadAsset(asset)
                     self.setlabel()

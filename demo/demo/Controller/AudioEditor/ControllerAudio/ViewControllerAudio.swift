@@ -478,6 +478,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
                 self.tableView.reloadData()
                 ZKProgressHUD.dismiss()
                 ZKProgressHUD.showSuccess()
+                ZKProgressHUD.dismiss(0.5)
             }
         }
     }
@@ -544,8 +545,9 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         queue.async {
             let a = self.mergeAudioWithVideo()
             DispatchQueue.main.async {
-                ZKProgressHUD.dismiss()
+                ZKProgressHUD.dismiss(0.5)
                 ZKProgressHUD.showSuccess()
+                ZKProgressHUD.dismiss(0.5)
                 self.audioURLDelegate.getAudioURL(url: a)
                 self.navigationController?.popViewController(animated: true)
             }
@@ -682,7 +684,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
 
             // Move to directory
             let urlDir = fileManage.saveToDocumentDirectory(url: output)
-            fileManage.clearTempDirectory()
+            
             return urlDir
         }
     }

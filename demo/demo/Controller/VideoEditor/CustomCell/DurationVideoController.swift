@@ -91,8 +91,9 @@ class DurationVideoController: UIViewController {
             self.isSave = true
             self.delegate.transformDuration(url: self.url!)
             DispatchQueue.main.async {
-                ZKProgressHUD.dismiss(0.5)
+                ZKProgressHUD.dismiss()
                 ZKProgressHUD.showSuccess()
+                ZKProgressHUD.dismiss(0.5)
                 self.navigationController?.popViewController(animated: true)
             }
         }
