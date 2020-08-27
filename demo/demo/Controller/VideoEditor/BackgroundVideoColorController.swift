@@ -61,6 +61,14 @@ class BackgroundVideoColorController: UIViewController {
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 255/255, green: 255/255, blue: 153/255, alpha: 1)))
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 255/255, green: 255/255, blue: 102/255, alpha: 1)))
         arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 255/255, green: 255/255, blue: 51/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 204/255, green: 240/255, blue: 195/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 188/255, green: 163/255, blue: 202/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 124/255, green: 71/255, blue: 137/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 74/255, green: 14/255, blue: 92/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 0/255, green: 106/255, blue: 113/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 255/255, green: 255/255, blue: 221/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 203/255, green: 234/255, blue: 237/255, alpha: 1)))
+        arr2.append(ModelBackgroundColor(uiColor: UIColor.init(red: 211/255, green: 222/255, blue: 50/255, alpha: 1)))
         
         
         
@@ -260,12 +268,22 @@ extension BackgroundVideoColorController: UICollectionViewDelegate, UICollection
         case 31: str = "FFFF99"
         case 32: str = "FFFF66"
         case 33: str = "FFFF33"
-        case 34: str = "AAAAAA"
-        case 35: str = "999999"
-        case 36: str = "888888"
-        case 37: str = "777777"
-        case 38: str = "666666"
-        case 39: str = "555555"
+        case 34: str = "ccf0c3"
+        case 35: str = "bca3ca"
+        case 36: str = "7c4789"
+        case 37: str = "4a0e5c"
+        case 38: str = "006a71"
+        case 39: str = "ffffdd"
+        case 40: str = "cbeaed"
+        case 41: str = "d3de32"
+        case 42: str = "CCCCCC"
+        case 43: str = "BBBBBB"
+        case 44: str = "AAAAAA"
+        case 45: str = "999999"
+        case 46: str = "888888"
+        case 47: str = "777777"
+        case 48: str = "666666"
+        case 49: str = "555555"
             
         default:
             print(indexPath.row)
