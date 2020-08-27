@@ -223,8 +223,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         
         let playBackTime = CGFloat(CMTimeGetSeconds(videoPlayer.currentTime()))
         trimmerView.seek(toTime: playBackTime)
-        
-        
+          
         if playBackTime >= endTime {
             videoPlayer.seek(to: CMTimeMakeWithSeconds(Float64(start), preferredTimescale: 600), toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
             videoPlayer.pause()
@@ -246,7 +245,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
             if hasChooseMusic {
                 audioDelayTime = Double(Audios[position].delayTime)
                 audioDuration = Audios[position].player.duration
-                if !Audios[position].player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) < 0){
+                if !Audios[position].player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) <= 0){
                     setTimeMusic(audio: Audios[position], startTime: playBackTime, play: true)
                     if isOverTimeDelay(startTime: playBackTime, delayTime: Audios[position].delayTime){
                         if videoPlayer.isPlaying {
@@ -258,7 +257,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
                 for audio in Audios {
                     audioDelayTime = Double(audio.delayTime)
                     audioDuration = audio.player.duration
-                    if !audio.player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) < 0) {
+                    if !audio.player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) <= 0) {
                         setTimeMusic(audio: audio, startTime: playBackTime, play: true)
                         if isOverTimeDelay(startTime: playBackTime, delayTime: audio.delayTime){
                             if videoPlayer.isPlaying {
@@ -524,13 +523,13 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         var audioDelayTime: Double!
         if hasChooseMusic {
             audioDelayTime = Double(Audios[position].delayTime)
-            if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - Audios[position].player.duration) < 0) {
+            if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - Audios[position].player.duration) <= 0) {
                 Audios[position].player.play()
             }
         } else {
             for audio in Audios {
                 audioDelayTime = Double(audio.delayTime)
-                if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - audio.player.duration) < 0){
+                if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - audio.player.duration) <= 0){
                     audio.player.play()
                 }
             }
@@ -869,7 +868,7 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
             self.rate = rate / self.steps
         }
         isReload = true
-        initVariable()
+        viewDidAppear(false)
     }
     
     func transformQuality(quality: String) {
@@ -879,7 +878,7 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
     func transformSplitMusic(url: URL) {
         self.arrURL[position] = url
         isReload = true
-        initVariable()
+        viewDidAppear(false)
     }
     
     func isRemove(isRemove: Bool) {
@@ -897,6 +896,7 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
             }
             tableView.reloadData()
             collectionView.reloadData()
+            trimmerView.resetSubviews()
         }
         position = -1
         hasChooseMusic = false
