@@ -183,7 +183,7 @@ class BackgroundVideoColorController: UIViewController {
                         MobileFFmpeg.execute(self.s)
                         self.BgURL = final
                         self.isSave = true
-                        self.delegate.transformReal(url: self.BgURL!)
+                        self.delegate.transformBackground(url: self.BgURL!)
                         DispatchQueue.main.async {
                             ZKProgressHUD.dismiss()
                             ZKProgressHUD.showSuccess()
@@ -238,7 +238,7 @@ class BackgroundVideoColorController: UIViewController {
                     self.removeFileIfExists(fileURL: urltf)
                     self.BgURL = final
                     self.isSave = true
-                    self.delegate.transformReal(url: self.BgURL!)
+                    self.delegate.transformBackground(url: self.BgURL!)
                     DispatchQueue.main.async {
                         ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
@@ -293,7 +293,7 @@ class BackgroundVideoColorController: UIViewController {
                     self.removeFileIfExists(fileURL: url1)
                     self.BgURL = final
                     self.isSave = true
-                    self.delegate.transformReal(url: self.BgURL!)
+                    self.delegate.transformBackground(url: self.BgURL!)
                     DispatchQueue.main.async {
                         ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
@@ -355,7 +355,7 @@ class BackgroundVideoColorController: UIViewController {
                     self.removeFileIfExists(fileURL: urltf)
                     self.BgURL = final
                     self.isSave = true
-                    self.delegate.transformReal(url: self.BgURL!)
+                    self.delegate.transformBackground(url: self.BgURL!)
                     DispatchQueue.main.async {
                         ZKProgressHUD.dismiss()
                         ZKProgressHUD.showSuccess()
