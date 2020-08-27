@@ -85,7 +85,6 @@
 		2CD038D924EE8609004B5109 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2CD038CF24EE8609004B5109 /* README.md */; };
 		2CEFC07124D54CB90075941E /* DurationVideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEFC07024D54CB90075941E /* DurationVideoController.swift */; };
 		2CF2E08224F7C56400D74FF8 /* 20200827054032.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2CF2E08124F7C56400D74FF8 /* 20200827054032.MOV */; };
-		8FDBAE6624F3757D001D9404 /* 20200824111023.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8FDBAE6524F3757D001D9404 /* 20200824111023.mp4 */; };
 		9EFDF37CAECA0840CFDEC477 /* Pods_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEC1E8A3D9D7E6BA25B7BC2 /* Pods_demo.framework */; };
 /* End PBXBuildFile section */
 
@@ -172,7 +171,6 @@
 		2CEFC07024D54CB90075941E /* DurationVideoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DurationVideoController.swift; path = CustomCell/DurationVideoController.swift; sourceTree = "<group>"; };
 		2CF2E08124F7C56400D74FF8 /* 20200827054032.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = 20200827054032.MOV; sourceTree = "<group>"; };
 		7EEC1E8A3D9D7E6BA25B7BC2 /* Pods_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FDBAE6524F3757D001D9404 /* 20200824111023.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 20200824111023.mp4; sourceTree = "<group>"; };
 		A4357C5C7544C36591DC3566 /* Pods-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.debug.xcconfig"; path = "Target Support Files/Pods-demo/Pods-demo.debug.xcconfig"; sourceTree = "<group>"; };
 		B214779E48D7ACD4CEC8F70A /* Pods-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.release.xcconfig"; path = "Target Support Files/Pods-demo/Pods-demo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -279,7 +277,6 @@
 		1999560424AAEB3100303ECD /* Videos */ = {
 			isa = PBXGroup;
 			children = (
-				8FDBAE6524F3757D001D9404 /* 20200824111023.mp4 */,
 				2CF2E08124F7C56400D74FF8 /* 20200827054032.MOV */,
 				19367B3A24C53E4E00922363 /* x.mp3 */,
 				19162B2C24AAE22C007D5603 /* testVideo.mp4 */,
@@ -535,7 +532,6 @@
 				19367B3B24C53E4E00922363 /* x.mp3 in Resources */,
 				19DCB58624D5136100CA7D04 /* AB.mov in Resources */,
 				2CD038D924EE8609004B5109 /* README.md in Resources */,
-				8FDBAE6624F3757D001D9404 /* 20200824111023.mp4 in Resources */,
 				1999560924AAEDA500303ECD /* testVideo.mp4 in Resources */,
 				2CF2E08224F7C56400D74FF8 /* 20200827054032.MOV in Resources */,
 				19DCB58324D5136100CA7D04 /* BackgroundColorViewCell.xib in Resources */,
