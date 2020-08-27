@@ -52,6 +52,7 @@ class VolumeViewController: UIViewController {
     
     @objc func screenTapped() {
         player.pause()
+        videoPlayer.pause()
         self.dismiss(animated: true)
     }
     
@@ -200,8 +201,10 @@ class VolumeViewController: UIViewController {
         self.dismiss(animated: true)
         if isVideo {
             videoPlayer.pause()
+        
         } else {
             player.pause()
+            
         }
     }
     
@@ -211,8 +214,10 @@ class VolumeViewController: UIViewController {
         self.dismiss(animated: true)
         if isVideo {
             videoPlayer.pause()
+           
         } else {
             player.pause()
+            
         }
     }
     

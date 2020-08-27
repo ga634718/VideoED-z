@@ -94,12 +94,9 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         
         asset = AVAsset(url: urlVideo)
         
-        
         collectionView.delegate = self
         collectionView.dataSource = self
-        
-
-        
+    
         createAudioSession()
         initCollectionView()
         
@@ -300,6 +297,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     //wave1
     @objc func wave1Action(sender : UITapGestureRecognizer) {
         // Do ....
+        isVideo = false
         if arrURL.count > 0 {
             
             // Pause all Audio and video
@@ -337,6 +335,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     //wave2
     @objc func wave2Action(sender : UITapGestureRecognizer) {
         // Do ....
+        isVideo = false
         if arrURL.count > 0 {
             
             // Pause all Audio and video
@@ -373,6 +372,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     //wave3
     @objc func wave3Action(sender : UITapGestureRecognizer) {
         // Do ....
+        isVideo = false
         if arrURL.count > 0 {
             
             // Pause all Audio and video
@@ -409,6 +409,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     //wave4
     @objc func wave4Action(sender : UITapGestureRecognizer) {
         // Do ....
+        isVideo = false
         if arrURL.count > 0 {
             
             // Pause all Audio and video
@@ -451,13 +452,17 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     }
     
     func initVariable() {
+        
         if arrURL.count > 0 {
-            initWaveform()
+            if !isVideo {
+                initWaveform()
+            }
             collectionView.reloadData()
         }
         position = -1
         hasChooseMusic = false
         isVideo = false
+        trimmerView.seek(toTime: 0)
     }
     
     // create session
@@ -1224,8 +1229,20 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
             self.volume = volume / self.volumeRate
             self.rate = rate / self.steps
         }
+        switch position + 1 {
+        case 1:
+            wave1.wavesColor = .white
+        case 2:
+            wave2.wavesColor = .white
+        case 3:
+            wave3.wavesColor = .white
+        case 4:
+            wave4.wavesColor = .white
+        default:
+            print("ok")
+        }
         isReload = true
-        viewDidAppear(false)
+        initVariable()
     }
     
     func transformQuality(quality: String) {
@@ -1235,7 +1252,7 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
     func transformSplitMusic(url: URL) {
         self.arrURL[position] = url
         isReload = true
-        viewDidAppear(false)
+        initVariable()
     }
     
     func isRemove(isRemove: Bool) {
