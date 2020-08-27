@@ -596,8 +596,8 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
             var audioDuration: Double!
             if hasChooseMusic {
                 audioDelayTime = Double(Audios[position].delayTime)
-                audioDuration = Audios[position].player.duration
-                if !Audios[position].player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) <= 0){
+                audioDuration = Audios[position].player.duration / Double(Audios[position].player.rate)
+                if !Audios[position].player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) < 0){
                     setTimeMusic(audio: Audios[position], startTime: playBackTime, play: true)
                     if isOverTimeDelay(startTime: playBackTime, delayTime: Audios[position].delayTime){
                         if videoPlayer.isPlaying {
@@ -608,8 +608,8 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
             } else {
                 for audio in Audios {
                     audioDelayTime = Double(audio.delayTime)
-                    audioDuration = audio.player.duration
-                    if !audio.player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) <= 0) {
+                    audioDuration = audio.player.duration / Double(audio.player.rate)
+                    if !audio.player.isPlaying && ((Double(playBackTime) - audioDelayTime - audioDuration) < 0) {
                         setTimeMusic(audio: audio, startTime: playBackTime, play: true)
                         if isOverTimeDelay(startTime: playBackTime, delayTime: audio.delayTime){
                             if videoPlayer.isPlaying {
@@ -812,6 +812,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         let cmd = "-i \(arrURL[position]) -vn -ac 2 -ar 44100 -ab 320k -f mp3 \(outputTemp)"
         let cmd2 = "-i \"concat:\(outputTemp)|\(outputTemp)\" -c copy \(outputDuplicate)"
         
+        
         let serialQueue = DispatchQueue(label: "serialQueue")
         
         DispatchQueue.main.async {
@@ -878,13 +879,13 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         var audioDelayTime: Double!
         if hasChooseMusic {
             audioDelayTime = Double(Audios[position].delayTime)
-            if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - Audios[position].player.duration) <= 0) {
+            if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - Audios[position].player.duration / Double(Audios[position].player.rate)) < 0) {
                 Audios[position].player.play()
             }
         } else {
             for audio in Audios {
                 audioDelayTime = Double(audio.delayTime)
-                if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - audio.player.duration) <= 0){
+                if (!videoPlayer.isPlaying) && (playbackTime >= audioDelayTime) && ((playbackTime - audioDelayTime - audio.player.duration / Double(audio.player.rate)) < 0){
                     audio.player.play()
                 }
             }
