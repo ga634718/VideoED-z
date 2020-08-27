@@ -9,5 +9,6 @@ target 'demo' do
   pod 'PryntTrimmerView'
   pod 'mobile-ffmpeg-full-gpl', '~> 4.3.2'
   pod 'ICGVideoTrimmer', '~> 1.1'
+  pod 'FDWaveformView'
   # Pods for demo
 end

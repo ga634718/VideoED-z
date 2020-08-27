@@ -12,6 +12,7 @@ import ICGVideoTrimmer
 import ZKProgressHUD
 import Photos
 import MediaPlayer
+import FDWaveformView
 
 class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPickerControllerDelegate {
     
@@ -23,7 +24,22 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var formView: UIView!
     @IBOutlet weak var trimmerView: ICGVideoTrimmerView!
-    @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var wave1: FDWaveformView!
+    @IBOutlet weak var wave2: FDWaveformView!
+    @IBOutlet weak var wave3: FDWaveformView!
+    @IBOutlet weak var wave4: FDWaveformView!
+    @IBOutlet weak var wave1Width: NSLayoutConstraint!
+    @IBOutlet weak var wave2Width: NSLayoutConstraint!
+    @IBOutlet weak var wave3Width: NSLayoutConstraint!
+    @IBOutlet weak var wave4Width: NSLayoutConstraint!
+    
+    fileprivate var startRendering = Date()
+    fileprivate var endRendering = Date()
+    fileprivate var startLoading = Date()
+    fileprivate var endLoading = Date()
+    fileprivate var profileResult = ""
     
     var audioURLDelegate: AudioURLDelegate!
     var playbackTimeCheckerTimer: Timer?
@@ -54,7 +70,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     var recordNum = 0
     var arrURL = [URL]()
     var recordURL:URL?
-    var position: Int!
+    var position = -1
     var hasChooseMusic = false
     var hasChangeMedia: Bool = false
     var isVideo: Bool!
@@ -65,7 +81,16 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         super.viewDidLoad()
         isReload = false
         
-//        urlVideo = URL(fileURLWithPath: fileManage.getFilePath(name: "small", type: "mp4"))
+        delegateWaveform()
+        
+        let wave1gesture = UITapGestureRecognizer(target: self, action:  #selector(self.wave1Action))
+        let wave2gesture = UITapGestureRecognizer(target: self, action:  #selector(self.wave2Action))
+        let wave3gesture = UITapGestureRecognizer(target: self, action:  #selector(self.wave3Action))
+        let wave4gesture = UITapGestureRecognizer(target: self, action:  #selector(self.wave4Action))
+        self.wave1.addGestureRecognizer(wave1gesture)
+        self.wave2.addGestureRecognizer(wave2gesture)
+        self.wave3.addGestureRecognizer(wave3gesture)
+        self.wave4.addGestureRecognizer(wave4gesture)
         
         asset = AVAsset(url: urlVideo)
         
@@ -73,8 +98,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        tableView.delegate = self
-        tableView.dataSource = self
+
         
         createAudioSession()
         initCollectionView()
@@ -90,6 +114,334 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         gotoEditVolume()
     }
     
+    func delegateWaveform(){
+            wave1.isUserInteractionEnabled = false
+            wave1.isHidden = true
+            wave2.isUserInteractionEnabled = false
+            wave2.isHidden = true
+            wave3.isUserInteractionEnabled = false
+            wave3.isHidden = true
+            wave4.isUserInteractionEnabled = false
+            wave4.isHidden = true
+            
+            wave1.delegate = self
+            wave2.delegate = self
+            wave3.delegate = self
+            wave4.delegate = self
+            
+        }
+        
+        func initWaveform(){
+            // Animate the waveform view when it is rendered
+            if arrURL.count > 0 {
+                let mainWidth = Double(view.frame.width - 42)
+                print(mainWidth)
+                let videoDuration = videoPlayer.currentItem?.asset.duration.seconds
+                print(videoDuration!)
+                addAudioPlayer()
+                if arrURL.count == 1 {
+                    //wave1
+    //                wave1.delegate = self
+                    wave1.alpha = 0.0
+                    wave1Width.constant = CGFloat(Audios[0].player.duration * mainWidth / videoDuration!)
+                    wave1.audioURL = arrURL[0]
+                    wave1.zoomSamples = 0 ..< wave1.totalSamples / 3
+                    wave1.doesAllowScrubbing = true
+                    wave1.doesAllowStretch = true
+                    wave1.doesAllowScroll = true
+                    wave1.backgroundColor = UIColor.clear
+                    wave1.wavesColor = UIColor.white
+                    wave1.isHidden = false
+                    wave1.isUserInteractionEnabled = true
+                    //wave 2, 3 , 4
+                    wave2.isHidden = true
+                    wave2.isUserInteractionEnabled = false
+                    wave3.isHidden = true
+                    wave3.isUserInteractionEnabled = false
+                    wave4.isHidden = true
+                    wave4.isUserInteractionEnabled = false
+                } else if arrURL.count == 2 {
+                    //wave1
+    //                wave1.delegate = self
+                    wave1.alpha = 0.0
+                    wave1Width.constant = CGFloat(Audios[0].player.duration * mainWidth / videoDuration!)
+                    wave1.audioURL = arrURL[0]
+                    wave1.zoomSamples = 0 ..< wave1.totalSamples / 3
+                    wave1.doesAllowScrubbing = true
+                    wave1.doesAllowStretch = true
+                    wave1.doesAllowScroll = true
+                    wave1.isHidden = false
+                    wave1.isUserInteractionEnabled = true
+                    wave1.backgroundColor = UIColor.clear
+                    wave1.wavesColor = UIColor.white
+                    //wave2
+    //                wave2.delegate = self
+                    wave2.alpha = 0.0
+                    wave2Width.constant = CGFloat(Audios[1].player.duration * mainWidth / videoDuration!)
+                    wave2.audioURL = arrURL[1]
+                    wave2.zoomSamples = 0 ..< wave2.totalSamples / 3
+                    wave2.doesAllowScrubbing = true
+                    wave2.doesAllowStretch = true
+                    wave2.doesAllowScroll = true
+                    wave2.isHidden = false
+                    wave2.isUserInteractionEnabled = true
+                    wave2.backgroundColor = UIColor.clear
+                    wave2.wavesColor = UIColor.white
+                    //wave 3, 4
+                    wave3.isHidden = true
+                    wave3.isUserInteractionEnabled = false
+                    wave4.isHidden = true
+                    wave4.isUserInteractionEnabled = false
+                } else if arrURL.count == 3 {
+                    //wave1
+    //                wave1.delegate = self
+                    wave1.alpha = 0.0
+                    wave1Width.constant = CGFloat(Audios[0].player.duration * mainWidth / videoDuration!)
+                    wave1.audioURL = arrURL[0]
+                    wave1.zoomSamples = 0 ..< wave1.totalSamples / 3
+                    wave1.doesAllowScrubbing = true
+                    wave1.doesAllowStretch = true
+                    wave1.doesAllowScroll = true
+                    wave1.isHidden = false
+                    wave1.isUserInteractionEnabled = true
+                    wave1.backgroundColor = UIColor.clear
+                    wave1.wavesColor = UIColor.white
+                    //wave2
+    //                wave2.delegate = self
+                    wave2.alpha = 0.0
+                    wave2Width.constant = CGFloat(Audios[1].player.duration * mainWidth / videoDuration!)
+                    wave2.audioURL = arrURL[1]
+                    wave2.zoomSamples = 0 ..< wave2.totalSamples / 3
+                    wave2.doesAllowScrubbing = true
+                    wave2.doesAllowStretch = true
+                    wave2.doesAllowScroll = true
+                    wave2.isHidden = false
+                    wave2.isUserInteractionEnabled = true
+                    wave2.backgroundColor = UIColor.clear
+                    wave2.wavesColor = UIColor.white
+                    //wave3
+    //                wave3.delegate = self
+                    wave3.alpha = 0.0
+                    wave3Width.constant = CGFloat(Audios[2].player.duration * mainWidth / videoDuration!)
+                    wave3.audioURL = arrURL[2]
+                    wave3.zoomSamples = 0 ..< wave3.totalSamples / 3
+                    wave3.doesAllowScrubbing = true
+                    wave3.doesAllowStretch = true
+                    wave3.doesAllowScroll = true
+                    wave3.isHidden = false
+                    wave3.isUserInteractionEnabled = true
+                    wave3.backgroundColor = UIColor.clear
+                    wave3.wavesColor = UIColor.white
+                    //wave4
+                    wave4.isHidden = true
+                    wave4.isUserInteractionEnabled = false
+                } else if arrURL.count == 4 {
+                    //wave1
+    //                wave1.delegate = self
+                    wave1.alpha = 0.0
+                    wave1Width.constant = CGFloat(Audios[0].player.duration * mainWidth / videoDuration!)
+                    wave1.audioURL = arrURL[0]
+                    wave1.zoomSamples = 0 ..< wave1.totalSamples / 3
+                    wave1.doesAllowScrubbing = true
+                    wave1.doesAllowStretch = true
+                    wave1.doesAllowScroll = true
+                    wave1.isHidden = false
+                    wave1.isUserInteractionEnabled = true
+                    wave1.backgroundColor = UIColor.clear
+                    wave1.wavesColor = UIColor.white
+                    //wave2
+    //                wave2.delegate = self
+                    wave2.alpha = 0.0
+                    wave2Width.constant = CGFloat(Audios[1].player.duration * mainWidth / videoDuration!)
+                    wave2.audioURL = arrURL[1]
+                    wave2.zoomSamples = 0 ..< wave2.totalSamples / 3
+                    wave2.doesAllowScrubbing = true
+                    wave2.doesAllowStretch = true
+                    wave2.doesAllowScroll = true
+                    wave2.isHidden = false
+                    wave2.isUserInteractionEnabled = true
+                    wave2.backgroundColor = UIColor.clear
+                    wave2.wavesColor = UIColor.white
+                    //wave3
+    //                wave3.delegate = self
+                    wave3.alpha = 0.0
+                    wave3Width.constant = CGFloat(Audios[2].player.duration * mainWidth / videoDuration!)
+                    wave3.audioURL = arrURL[2]
+                    wave3.zoomSamples = 0 ..< wave3.totalSamples / 3
+                    wave3.doesAllowScrubbing = true
+                    wave3.doesAllowStretch = true
+                    wave3.doesAllowScroll = true
+                    wave3.isHidden = false
+                    wave3.isUserInteractionEnabled = true
+                    wave3.backgroundColor = UIColor.clear
+                    wave3.wavesColor = UIColor.white
+                    //wave4
+    //                wave4.delegate = self
+                    wave4.alpha = 0.0
+                    wave4Width.constant = CGFloat(Audios[3].player.duration * mainWidth / videoDuration!)
+                    wave4.audioURL = arrURL[3]
+                    wave4.zoomSamples = 0 ..< wave4.totalSamples / 3
+                    wave4.doesAllowScrubbing = true
+                    wave4.doesAllowStretch = true
+                    wave4.doesAllowScroll = true
+                    wave4.isHidden = false
+                    wave4.isUserInteractionEnabled = true
+                    wave4.backgroundColor = UIColor.clear
+                    wave4.wavesColor = UIColor.white
+                }
+            } else {
+                wave1.isHidden = true
+                wave1.isUserInteractionEnabled = false
+            }
+//            scrollView.contentSize.width = 5000
+        }
+    
+    //MARK: Tap sound wave action
+    //wave1
+    @objc func wave1Action(sender : UITapGestureRecognizer) {
+        // Do ....
+        if arrURL.count > 0 {
+            
+            // Pause all Audio and video
+            for audio in Audios {
+                audio.player.pause()
+            }
+            videoPlayer.pause()
+            
+            if position == 0 {
+                wave1.wavesColor = UIColor.white
+                position = -1
+                hasChooseMusic = false
+            } else {
+                wave1.wavesColor = UIColor.yellow
+                if position != -1 {
+                    switch (position + 1) {
+                    case 2:
+                        wave2.wavesColor = UIColor.white
+                    case 3:
+                        wave3.wavesColor = UIColor.white
+                    case 4:
+                        wave4.wavesColor = UIColor.white
+                    default: break
+                    }
+                }
+                position = 0
+                hasChooseMusic = true
+            }
+            print(Audios[0].player.duration)
+            collectionView.reloadData()
+            changeIconBtnPlay()
+        }
+    }
+    
+    //wave2
+    @objc func wave2Action(sender : UITapGestureRecognizer) {
+        // Do ....
+        if arrURL.count > 0 {
+            
+            // Pause all Audio and video
+            for audio in Audios {
+                audio.player.pause()
+            }
+            videoPlayer.pause()
+            
+            if position == 1 {
+                wave2.wavesColor = UIColor.white
+                position = -1
+                hasChooseMusic = false
+            } else {
+                wave2.wavesColor = UIColor.yellow
+                if position != -1 {
+                    switch (position + 1) {
+                    case 1:
+                        wave1.wavesColor = UIColor.white
+                    case 3:
+                        wave3.wavesColor = UIColor.white
+                    case 4:
+                        wave4.wavesColor = UIColor.white
+                    default: break
+                    }
+                }
+                position = 1
+                hasChooseMusic = true
+            }
+            collectionView.reloadData()
+            changeIconBtnPlay()
+        }
+    }
+    
+    //wave3
+    @objc func wave3Action(sender : UITapGestureRecognizer) {
+        // Do ....
+        if arrURL.count > 0 {
+            
+            // Pause all Audio and video
+            for audio in Audios {
+                audio.player.pause()
+            }
+            videoPlayer.pause()
+            
+            if position == 2 {
+                wave3.wavesColor = UIColor.white
+                position = -1
+                hasChooseMusic = false
+            } else {
+                wave3.wavesColor = UIColor.yellow
+                if position != -1 {
+                    switch (position + 1) {
+                    case 2:
+                        wave2.wavesColor = UIColor.white
+                    case 1:
+                        wave1.wavesColor = UIColor.white
+                    case 4:
+                        wave4.wavesColor = UIColor.white
+                    default: break
+                    }
+                }
+                position = 2
+                hasChooseMusic = true
+            }
+            collectionView.reloadData()
+            changeIconBtnPlay()
+        }
+    }
+    
+    //wave4
+    @objc func wave4Action(sender : UITapGestureRecognizer) {
+        // Do ....
+        if arrURL.count > 0 {
+            
+            // Pause all Audio and video
+            for audio in Audios {
+                audio.player.pause()
+            }
+            videoPlayer.pause()
+            if position == 3 {
+                wave4.wavesColor = UIColor.white
+                position = -1
+                hasChooseMusic = false
+            } else {
+                wave4.wavesColor = UIColor.yellow
+                if position != -1 {
+                    switch (position + 1) {
+                    case 2:
+                        wave2.wavesColor = UIColor.white
+                    case 3:
+                        wave3.wavesColor = UIColor.white
+                    case 1:
+                        wave1.wavesColor = UIColor.white
+                    default: break
+                    }
+                }
+                position = 3
+                hasChooseMusic = true
+            }
+
+            collectionView.reloadData()
+            changeIconBtnPlay()
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         addVieoPlayer(asset: asset, playerView: playerView)
@@ -100,7 +452,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     
     func initVariable() {
         if arrURL.count > 0 {
-            tableView.reloadData()
+            initWaveform()
             collectionView.reloadData()
         }
         position = -1
@@ -447,7 +799,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
         print("Audio URL:::")
         print(audioUrl ?? "No file detected")
         arrURL.append(audioUrl!)
-        tableView.reloadData()
+        initWaveform()
         mediaPicker.dismiss(animated: true, completion: nil)
     }
     
@@ -455,7 +807,9 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
     func dupicateAudioFile() {
         
         let outputTemp = fileManage.createUrlInApp(name: "temp.mp3")
-        let outputDuplicate = fileManage.createUrlInApp(name: "Duplicate.mp3")
+        let name = Date().toString(dateFormat: "HH:mm:ss")
+        let type = ".mp3"
+        let outputDuplicate = fileManage.createUrlInApp(name: "\(name)\(type)")
         let cmd = "-i \(arrURL[position]) -vn -ac 2 -ar 44100 -ab 320k -f mp3 \(outputTemp)"
         let cmd2 = "-i \"concat:\(outputTemp)|\(outputTemp)\" -c copy \(outputDuplicate)"
         
@@ -476,7 +830,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
             audio.rate = audioPosition.player.rate
             self.Audios[self.position].player = audio
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                self.initWaveform()
                 ZKProgressHUD.dismiss()
                 ZKProgressHUD.showSuccess()
             }
@@ -624,7 +978,7 @@ class ViewControllerAudio: UIViewController, AVAudioRecorderDelegate, MPMediaPic
             let str = "-i \(recordURL!) -c:a libmp3lame -q:a 8 \(tempURL)"
             MobileFFmpeg.execute(str)
             arrURL.append(tempURL)
-            tableView.reloadData()
+            initWaveform()
             collectionView.reloadData()
         } else{
             print("Record failed")
@@ -895,16 +1249,17 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
                 arrURL.remove(at: position)
                 Audios.remove(at: position)
             }
-            tableView.reloadData()
             collectionView.reloadData()
         }
         position = -1
+        initWaveform()
         hasChooseMusic = false
     }
     
     func isGetMusic(state: Bool) {
         if state {
-            tableView.reloadData()
+            addAudioPlayer()
+            initWaveform()
         }
     }
     
@@ -923,44 +1278,71 @@ extension ViewControllerAudio: UICollectionViewDelegate, UICollectionViewDataSou
 
 
 //MARK: Extension TableView
-extension ViewControllerAudio: UITableViewDelegate, UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrURL.count
+//extension ViewControllerAudio: UITableViewDelegate, UITableViewDataSource {
+//
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return arrURL.count
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+//        if arrURL.count != 0 {
+//            if indexPath.row < arrURL.count {
+//                cell.textLabel?.text = arrURL[indexPath.row].lastPathComponent
+//                addAudioPlayer()
+//            }
+//        }
+//        return cell
+//    }
+//
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        isVideo = false
+//
+//        if arrURL.count > 0 {
+//
+//            // Pause all Audio and video
+//            for audio in Audios {
+//                audio.player.pause()
+//            }
+//            videoPlayer.pause()
+//
+//            if indexPath.row != position {
+//                position = indexPath.row
+//                hasChooseMusic = true
+//            } else {
+//                tableView.deselectRow(at: indexPath, animated: true)
+//                position = -1
+//                hasChooseMusic = false
+//            }
+//            collectionView.reloadData()
+//            changeIconBtnPlay()
+//        }
+//    }
+//}
+
+//MARK: Waveform Delegate
+
+extension ViewControllerAudio: FDWaveformViewDelegate {
+    func waveformViewWillRender(_ waveformView: FDWaveformView) {
+        startRendering = Date()
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        if arrURL.count != 0 {
-            if indexPath.row < arrURL.count {
-                cell.textLabel?.text = arrURL[indexPath.row].lastPathComponent
-                addAudioPlayer()
-            }
-        }
-        return cell
+    func waveformViewDidRender(_ waveformView: FDWaveformView) {
+        endRendering = Date()
+        NSLog("FDWaveformView rendering done, took %0.3f seconds", endRendering.timeIntervalSince(startRendering))
+        profileResult.append(String(format: " render %0.3f ", endRendering.timeIntervalSince(startRendering)))
+        UIView.animate(withDuration: 0.25, animations: {() -> Void in
+            waveformView.alpha = 1.0
+        })
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        isVideo = false
-        
-        if arrURL.count > 0 {
-            
-            // Pause all Audio and video
-            for audio in Audios {
-                audio.player.pause()
-            }
-            videoPlayer.pause()
-            
-            if indexPath.row != position {
-                position = indexPath.row
-                hasChooseMusic = true
-            } else {
-                tableView.deselectRow(at: indexPath, animated: true)
-                position = -1
-                hasChooseMusic = false
-            }
-            collectionView.reloadData()
-            changeIconBtnPlay()
-        }
+    func waveformViewWillLoad(_ waveformView: FDWaveformView) {
+        startLoading = Date()
+    }
+    
+    func waveformViewDidLoad(_ waveformView: FDWaveformView) {
+        endLoading = Date()
+        NSLog("FDWaveformView loading done, took %0.3f seconds", endLoading.timeIntervalSince(startLoading))
+        profileResult.append(String(format: " load %0.3f ", endLoading.timeIntervalSince(startLoading)))
     }
 }
