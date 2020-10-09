@@ -97,7 +97,7 @@ extension VideoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
         
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.size.width/6.5, height: collectionView.frame.size.height)
+        return CGSize(width: collectionView.frame.size.width/6, height: collectionView.frame.size.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
